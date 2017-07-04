@@ -4,54 +4,61 @@ import './App.css';
 import faker from 'faker';
 
 const wordCell = (id, value, selectHandler) => {
-  return ce('td', { className: 'word-cell', name: id, onClick: () => selectHandler(id, value) }, value);
+  return ce('td', {
+    className: 'word-cell',
+    name: id,
+    onClick: () => selectHandler(id, value),
+  }, value);
 };
 
-const RandomNumber = (min, max, exclusions) => {
-  //from https://stackoverflow.com/questions/34182699/random-integer-in-a-certain-range-excluding-one-number
-  const exclusionsSorted = exclusions.concat().sort(function(a, b) {
-    return a - b
-  });
-  let randomNumber = Math.floor(Math.random() * max) + min;
-  for(let i = 0; i < exclusionsSorted.length; i++) {
-    if (randomNumber >= exclusionsSorted[i]) {
-      randomNumber++;
-    }
-  }
-  return randomNumber;
-}
-
-const positionToNumber = {
-  A1: '', A2: '', A3: '', A4: '', A5: '',
-  B1: '', B2: '', B3: '', B4: '', B5: '',
-  C1: '', C2: '', C3: '', C4: '', C5: '',
-  D1: '', D2: '', D3: '', D4: '', D5: '',
-  E1: '', E2: '', E3: '', E4: '', E5: '',
-}
+// const RandomNumber = (min, max) => {
+//   //from https://stackoverflow.com/questions/34182699/random-integer-in-a-certain-range-excluding-one-number
+//   const exclusionsSorted = exclusions.concat().sort(function(a, b) {
+//     return a - b
+//   });
+//   let randomNumber = Math.floor(Math.random() * max) + min;
+//   for(let i = 0; i < max; i++) {
+//     if (exclusionsSorted.findrandomNumber >= exclusionsSorted[i]) {
+//       randomNumber++;
+//     }
+//   }
+//   return randomNumber;
+// }
 
 const initialState = {
   size: 5, //default 5 x 5 grid
-  gridValues: Array(25).fill(''),
+  gridValues: Array(25).fill({ word: '', type: '' }),
 };
 
 // const setBackgrounds = () => {
-//   const newState = initialState;
-  
-//   for (let position in initialState) {
+//   const gridValues = this.state.gridValues.concat();
+//   const sessionGameBoard = {};
+//   const populateCount = 0;
+//   //set red team 
+//   for(let i = 0; i < 9; i++){
+//     let newRandomPosition = RandomNumber(0, size * size - 1, exclusionList)
+//     exclusionList.push(newRandomPosition);
+//     sessionGameBoard[newRandomPosition] = { owner: 'Red' };
 //   }
-// const exclusionList = [];
-// for(let i = 0; i < size * size - 1; i++) {
-//   let newRandomPosition = RandomNumber(0, size * size - 1, exclusionList)
-//   exclusionList.push(newRandomPosition);
-
-// }
+//   //set blue team
+//   for(let i = 0; i < 9; i++){
+//     let newRandomPosition = RandomNumber(0, size * size - 1, exclusionList)
+//     exclusionList.push(newRandomPosition);
+//     sessionGameBoard[newRandomPosition] = { owner: 'Red' };
+//   }
 // }
 
 class App extends React.Component {
   state = initialState;
 
   componentWillMount() {
-    this.setState({ gridValues: this.state.gridValues.map(cell => faker.random.word()) });
+    const gridValues = [...this.state.gridValues];
+    console.log(gridValues);
+    for(let i = 0; i < gridValues.length; i++) {
+      let newWord = faker.random.word();
+      gridValues[i] = {...gridValues[i], word: newWord};
+    }
+    this.setState({ gridValues });
   }
 
   componentDidMount() {
@@ -68,7 +75,7 @@ class App extends React.Component {
             ce('tr', {},
               this.state.gridValues.slice(i*size, i*size+size).map((cell, index) => {
                 console.log('on cell', i*size+index);
-                return wordCell(i+index, cell, this.selectWord)
+                return wordCell(i*size+index, cell.word, this.selectWord)
               })
             )
           )
@@ -100,7 +107,7 @@ class App extends React.Component {
               'Blue Team'
             ),
             ce('div', { className: 'col-4' }),
-            ce('div', { className: 'col' },
+            ce('div', { className: 'col-12' },
               ce('table', { className: 'word-cell-wrapper' },
                   this.gridRows(this.state.size),
               ),
