@@ -2,11 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
 .App-header {
   background-color: #222;
   height: 150px;
@@ -26,6 +21,22 @@
   height: 100px;
 }
 
+.word-cell.Red {
+  background-color: red;
+}
+
+.word-cell.Blue {
+  background-color: blue;
+}
+
+.word-cell.Innocent {
+  background-color: grey;
+}
+
+.word-cell.Assassin {
+  background-color: black;
+  color: white;
+}
 .word-cell:hover {
   font-size: 120%;
   background-color: lightgrey;
