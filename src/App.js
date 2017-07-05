@@ -3,6 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 import faker from 'faker';
 
+import Scoreboard from './Models/scoreboard';
+import TurnsManager from './Models/turnsManager';
+
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);
@@ -30,6 +33,11 @@ const initialState = () => {
   return {
     size: 5,
     gridValues,
+    currentTurn: 'Red',
+    score: {
+      Red: 0,
+      Blue: 0,
+    }
   }
 };
 
@@ -43,7 +51,6 @@ const setBackgrounds = (colorlessGrid, size) => {
     populateCount++;
     gridValues.push(gridValues[newRandomPosition]);
     gridValues.remove(newRandomPosition);
-    console.log('red')
   }
   //set blue team
   for(let i = 0; i <= 7; i++){
@@ -52,14 +59,12 @@ const setBackgrounds = (colorlessGrid, size) => {
     populateCount++;
     gridValues.push(gridValues[newRandomPosition]);
     gridValues.remove(newRandomPosition);
-    console.log('blue')
   }
   // set assassin
   gridValues[0].type = 'Assassin';
   populateCount++;
   gridValues.push(gridValues[0]);
   gridValues.remove(0);
-  console.log('assassin')
   // set innocent peoples
   for(let i = 0; i <= 6; i++){
     let newRandomPosition = RandomNumber(0, size * size - 1 - populateCount);
@@ -67,11 +72,7 @@ const setBackgrounds = (colorlessGrid, size) => {
     populateCount++;
     gridValues.push(gridValues[newRandomPosition]);
     gridValues.remove(newRandomPosition);
-    console.log('innocent')
   }
-  console.log('Done adding colors');
-  console.log('------');
-  console.log(gridValues);
   return gridValues;
 }
 
@@ -80,7 +81,6 @@ class App extends React.Component {
 
   componentWillMount() {
     const gridValues = [...this.state.gridValues];
-    console.log(gridValues);
     for(let i = 0; i < gridValues.length; i++) {
       let newWord = faker.random.word();
       gridValues[i] = {...gridValues[i], word: newWord};
@@ -100,11 +100,9 @@ class App extends React.Component {
     return (
       ce('tbody', {},
         numberOfRows.map((row,i) => {
-          console.log('on row ', i)
           return (
             ce('tr', {},
               this.state.gridValues.slice(i*size, i*size+size).map((cell, index) => {
-                console.log('on cell', i*size+index);
                 return wordCell(i*size+index, cell.word, cell.type, this.selectWord)
               })
             )
@@ -119,23 +117,38 @@ class App extends React.Component {
     this.setState({ [position]: value });
   }
 
+  swtchTurns = () => {
+    TurnsManager.switchTurn();
+    this.setState({ currentTurn: TurnsManager.state.currentTeamTurn });
+  }
+
+  pointsAdder = (team) => {
+    Scoreboard.pointsAdder(team)
+    this.setState({ score: Scoreboard.state.score } );
+  }
+
   render() {
+    const { currentTurn, score } = this.state;
     return (
       ce('div', { className: 'App' },
         ce('div', { className: 'container-fluid' },
           ce('div', { className: 'row'},
-            ce('div', { className: 'col-4' }),
-            ce('div', { className: 'col-2' },
-              'Red Team'
+            ce('div', { className: 'col-12' }, 'Current Team\'s Turn: ' + currentTurn),
+            ce('div', { className: 'col-3' }),
+            ce('div', { className: 'col-3' },
+              'Red Team - ' + score.Red,
             ),
-            ce('div', { className: 'col-2' },
-              'Blue Team'
+            ce('div', { className: 'col-3' },
+              'Blue Team - ' + score.Blue,
             ),
-            ce('div', { className: 'col-4' }),
+            ce('div', { className: 'col-3' }),
             ce('div', { className: 'col-12' },
               ce('table', { className: 'word-cell-wrapper' },
-                  this.gridRows(this.state.size),
+                this.gridRows(this.state.size),
               ),
+            ),
+            ce('div', { className: 'col-12' },
+              ce('button', { onClick: () => this.swtchTurns() }, 'Next Turn'),
             ),
           ),
         ),

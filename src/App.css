@@ -13,14 +13,6 @@
   font-size: large;
 }
 
-.word-cell {
-  border-color: black;
-  border-width: 1px;
-  border: solid;
-  width: 100px;
-  height: 100px;
-}
-
 .word-cell.Red {
   background-color: red;
 }
@@ -38,7 +30,7 @@
   color: white;
 }
 .word-cell:hover {
-  font-size: 120%;
+  font-weight: 200;
   background-color: lightgrey;
 }
 
@@ -46,6 +38,15 @@
   text-align: center;
   margin: auto;
 }
+
+.word-cell {
+  border-color: black;
+  border-width: 2px;
+  border: solid;
+  width: 100px;
+  height: 100px;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
