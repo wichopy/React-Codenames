@@ -16,8 +16,9 @@ Array.prototype.remove = function(from, to) {
 const wordCell = (id, value, type, selectHandler) => {
   return ce('td', {
     className: 'word-cell ' + type,
+    team: type,
     name: id,
-    onClick: () => selectHandler(id, value),
+    onClick: () => selectHandler(id, value, type),
   }, value);
 };
 
@@ -112,8 +113,12 @@ class App extends React.Component {
     );
   }
 
-  selectWord = (position, value) => {
+  selectWord = (position, value, type) => {
     console.log('Selecting Word: ', position, value);
+    console.log(type)
+    if (type == this.state.currentTurn) {
+      this.pointsAdder(type)
+    }
     this.setState({ [position]: value });
   }
 
@@ -131,9 +136,8 @@ class App extends React.Component {
     const { currentTurn, score } = this.state;
     return (
       ce('div', { className: 'App' },
-        ce('div', { className: 'container-fluid' },
+        ce('div', { className: 'container' },
           ce('div', { className: 'row'},
-            ce('div', { className: 'col-12' }, 'Current Team\'s Turn: ' + currentTurn),
             ce('div', { className: 'col-3' }),
             ce('div', { className: 'col-3' },
               'Red Team - ' + score.Red,
@@ -142,12 +146,13 @@ class App extends React.Component {
               'Blue Team - ' + score.Blue,
             ),
             ce('div', { className: 'col-3' }),
-            ce('div', { className: 'col-12' },
+            ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
+            ce('div', { className: 'col-8' },
               ce('table', { className: 'word-cell-wrapper' },
                 this.gridRows(this.state.size),
               ),
             ),
-            ce('div', { className: 'col-12' },
+            ce('div', { className: 'col-2' },
               ce('button', { onClick: () => this.swtchTurns() }, 'Next Turn'),
             ),
           ),
