@@ -13,23 +13,67 @@
   font-size: large;
 }
 
-.word-cell.Red {
-  background-color: red;
+.word-cell.disabled {
+  color: white;
+  border-color: black;
 }
 
+.word-cell.Red {
+  background-color: #D03111;
+}
+
+.word-cell.Red.disabled {
+  background-color: #721300;
+}
+
+.word-cell.Red.disabled:hover {
+  background-color: #721300;
+}
 .word-cell.Blue {
-  background-color: blue;
+  background-color: #18B0FC;
+}
+
+.word-cell.Blue.disabled {
+  background-color: #004A6F
+}
+
+.word-cell.Blue.disabled:hover {
+  background-color: #004A6F
 }
 
 .word-cell.Innocent {
   background-color: grey;
 }
 
+.word-cell.Innocent.disabled {
+  background-color: #4D4D4D;
+}
+
+.word-cell.Innocent.disabled:hover {
+  background-color: #4D4D4D;
+}
+
 .word-cell.Assassin {
   background-color: black;
   color: white;
+  border-color: black;
 }
-.word-cell:hover {
+.word-cell.Red:hover {
+  font-weight: 200;
+  background-color: lightgrey;
+}
+
+.word-cell.Blue:hover {
+  font-weight: 200;
+  background-color: lightgrey;
+}
+
+.word-cell.Assassin:hover {
+  font-weight: 200;
+  background-color: lightgrey;
+}
+
+.word-cell.Innocent:hover {
   font-weight: 200;
   background-color: lightgrey;
 }

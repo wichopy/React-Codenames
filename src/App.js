@@ -13,12 +13,15 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-const wordCell = (id, value, type, selectHandler) => {
+const wordCell = (id, value, type, isEnabled, selectHandler) => {
+  let className = 'word-cell ' + type
+  if (!isEnabled) {
+    className += ' disabled'
+  }
   return ce('td', {
-    className: 'word-cell ' + type,
-    team: type,
+    className: className,
     name: id,
-    onClick: () => selectHandler(id, value, type),
+    onClick: isEnabled? () => selectHandler(id, value, type) : () => { return },
   }, value);
 };
 
@@ -29,7 +32,7 @@ const RandomNumber = (min, max) => {
 
 const initialState = () => {
   // default 5 x 5 grid
-  const unindexedGridValues = Array(25).fill({ word: '', type: '' });
+  const unindexedGridValues = Array(25).fill({ word: '', type: '', isEnabled: true });
   const gridValues = unindexedGridValues.map((cell, index) => { return { ...cell, index } });
   return {
     size: 5,
@@ -74,6 +77,7 @@ const setBackgrounds = (colorlessGrid, size) => {
     gridValues.push(gridValues[newRandomPosition]);
     gridValues.remove(newRandomPosition);
   }
+
   return gridValues;
 }
 
@@ -104,7 +108,7 @@ class App extends React.Component {
           return (
             ce('tr', {},
               this.state.gridValues.slice(i*size, i*size+size).map((cell, index) => {
-                return wordCell(i*size+index, cell.word, cell.type, this.selectWord)
+                return wordCell(i*size+index, cell.word, cell.type, cell.isEnabled, this.selectWord)
               })
             )
           )
@@ -119,7 +123,12 @@ class App extends React.Component {
     if (type == this.state.currentTurn) {
       this.pointsAdder(type)
     }
-    this.setState({ [position]: value });
+    let newGridValues = [...this.state.gridValues]
+    newGridValues[position].isEnabled = false
+    this.setState({ 
+      [position]: value,
+      gridValues: newGridValues,
+    });
   }
 
   swtchTurns = () => {
