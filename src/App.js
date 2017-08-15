@@ -2,9 +2,35 @@ import React, { createElement as ce } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import faker from 'faker';
+import {
+  ApolloClient,
+  gql,
+  graphql,
+  ApolloProvider,
+  createNetworkInterface,
+} from 'react-apollo';
+
+import { typeDefs } from './schema';
 
 import Scoreboard from './Models/scoreboard';
 import TurnsManager from './Models/turnsManager';
+import WordCellGrid from './Components/WordCellGrid';
+const networkInterface = createNetworkInterface({ uri: '/graphql'})
+
+const client = new ApolloClient({ networkInterface });
+
+const WordCellGridQuery = gql`
+  query allWordCells {
+    wordCell {
+        index
+        word
+        type
+        isEnabled
+    }
+  }
+`;
+
+const PopulatedWordCellGrid = graphql(WordCellGridQuery)(WordCellGrid);
 
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
@@ -13,30 +39,11 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-const wordCell = (id, value, type, isEnabled, selectHandler) => {
-  let className = 'word-cell ' + type
-  if (!isEnabled) {
-    className += ' disabled'
-  }
-  return ce('td', {
-    className: className,
-    name: id,
-    onClick: isEnabled? () => selectHandler(id, value, type) : () => { return },
-  }, value);
-};
-
-const RandomNumber = (min, max) => {
-  let randomNumber = Math.floor(Math.random() * max) + min;
-  return randomNumber;
-}
-
 const initialState = () => {
-  // default 5 x 5 grid
-  const unindexedGridValues = Array(25).fill({ word: '', type: '', isEnabled: true });
-  const gridValues = unindexedGridValues.map((cell, index) => { return { ...cell, index } });
   return {
+    users: [],
     size: 5,
-    gridValues,
+    gridValues: [],
     currentTurn: 'Red',
     score: {
       Red: 0,
@@ -45,76 +52,13 @@ const initialState = () => {
   }
 };
 
-const setBackgrounds = (colorlessGrid, size) => {
-  const gridValues = colorlessGrid.concat();
-  let populateCount = 0;
-  //set red team 
-  for(let i = 0; i <= 8; i++){
-    let newRandomPosition = RandomNumber(0, size * size - 1 - populateCount);
-    gridValues[newRandomPosition].type = 'Red'
-    populateCount++;
-    gridValues.push(gridValues[newRandomPosition]);
-    gridValues.remove(newRandomPosition);
-  }
-  //set blue team
-  for(let i = 0; i <= 7; i++){
-    let newRandomPosition = RandomNumber(0, size * size - 1 - populateCount);
-    gridValues[newRandomPosition].type = 'Blue'
-    populateCount++;
-    gridValues.push(gridValues[newRandomPosition]);
-    gridValues.remove(newRandomPosition);
-  }
-  // set assassin
-  gridValues[0].type = 'Assassin';
-  populateCount++;
-  gridValues.push(gridValues[0]);
-  gridValues.remove(0);
-  // set innocent peoples
-  for(let i = 0; i <= 6; i++){
-    let newRandomPosition = RandomNumber(0, size * size - 1 - populateCount);
-    gridValues[newRandomPosition].type = 'Innocent'
-    populateCount++;
-    gridValues.push(gridValues[newRandomPosition]);
-    gridValues.remove(newRandomPosition);
-  }
-
-  return gridValues;
-}
 
 class App extends React.Component {
   state = initialState();
 
-  componentWillMount() {
-    const gridValues = [...this.state.gridValues];
-    for(let i = 0; i < gridValues.length; i++) {
-      let newWord = faker.random.word();
-      gridValues[i] = {...gridValues[i], word: newWord};
-    }
-    this.setState({ gridValues });
-  }
 
   componentDidMount() {
     console.log('App mounted.')
-    const addBackgrounds = setBackgrounds(this.state.gridValues, this.state.size);
-    const gridValues = addBackgrounds.sort((a,b) => a.index - b.index);
-    this.setState({ gridValues });
-  }
-
-  gridRows = (size) => {
-    const numberOfRows = Array(size).fill('');
-    return (
-      ce('tbody', {},
-        numberOfRows.map((row,i) => {
-          return (
-            ce('tr', {},
-              this.state.gridValues.slice(i*size, i*size+size).map((cell, index) => {
-                return wordCell(i*size+index, cell.word, cell.type, cell.isEnabled, this.selectWord)
-              })
-            )
-          )
-        })
-      )
-    );
   }
 
   selectWord = (position, value, type) => {
@@ -144,25 +88,25 @@ class App extends React.Component {
   render() {
     const { currentTurn, score } = this.state;
     return (
-      ce('div', { className: 'App' },
-        ce('div', { className: 'container' },
-          ce('div', { className: 'row'},
-            ce('div', { className: 'col-3' }),
-            ce('div', { className: 'col-3' },
-              'Red Team - ' + score.Red,
-            ),
-            ce('div', { className: 'col-3' },
-              'Blue Team - ' + score.Blue,
-            ),
-            ce('div', { className: 'col-3' }),
-            ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
-            ce('div', { className: 'col-8' },
-              ce('table', { className: 'word-cell-wrapper' },
-                this.gridRows(this.state.size),
+      ce(ApolloProvider, { client },
+        ce('div', { className: 'App' },
+          ce('div', { className: 'container' },
+            ce('div', { className: 'row'},
+              ce('div', { className: 'col-3' }),
+              ce('div', { className: 'col-3' },
+                'Red Team - ' + score.Red,
               ),
-            ),
-            ce('div', { className: 'col-2' },
-              ce('button', { onClick: () => this.swtchTurns() }, 'Next Turn'),
+              ce('div', { className: 'col-3' },
+                'Blue Team - ' + score.Blue,
+              ),
+              ce('div', { className: 'col-3' }),
+              ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
+              ce('div', { className: 'col-8' },
+                ce(PopulatedWordCellGrid, { selectWord: this.selectWord },),
+              ),
+              ce('div', { className: 'col-2' },
+                ce('button', { onClick: () => this.swtchTurns() }, 'Next Turn'),
+              ),
             ),
           ),
         ),
