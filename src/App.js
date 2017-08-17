@@ -10,7 +10,7 @@ import {
   createNetworkInterface,
 } from 'react-apollo';
 
-import { typeDefs } from './schema';
+// import { typeDefs } from './schema';
 
 import Scoreboard from './Models/scoreboard';
 import TurnsManager from './Models/turnsManager';
@@ -19,7 +19,7 @@ const networkInterface = createNetworkInterface({ uri: '/graphql'})
 
 const client = new ApolloClient({ networkInterface });
 
-const WordCellGridQuery = gql`
+export const WordCellGridQuery = gql`
   query allWordCells {
     wordCell {
         index
@@ -31,7 +31,6 @@ const WordCellGridQuery = gql`
 `;
 
 const PopulatedWordCellGrid = graphql(WordCellGridQuery)(WordCellGrid);
-
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);
@@ -61,19 +60,19 @@ class App extends React.Component {
     console.log('App mounted.')
   }
 
-  selectWord = (position, value, type) => {
-    console.log('Selecting Word: ', position, value);
-    console.log(type)
-    if (type == this.state.currentTurn) {
-      this.pointsAdder(type)
-    }
-    let newGridValues = [...this.state.gridValues]
-    newGridValues[position].isEnabled = false
-    this.setState({ 
-      [position]: value,
-      gridValues: newGridValues,
-    });
-  }
+  // selectWord = (position, value, type) => {
+    // console.log('Selecting Word: ', position, value);
+    // console.log(type)
+    // if (type == this.state.currentTurn) {
+    //   this.pointsAdder(type)
+    // }
+    // let newGridValues = [...this.state.gridValues]
+    // newGridValues[position].isEnabled = false
+    // this.setState({ 
+    //   [position]: value,
+    //   gridValues: newGridValues,
+    // });
+  // }
 
   swtchTurns = () => {
     TurnsManager.switchTurn();
@@ -102,7 +101,7 @@ class App extends React.Component {
               ce('div', { className: 'col-3' }),
               ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
               ce('div', { className: 'col-8' },
-                ce(PopulatedWordCellGrid, { selectWord: this.selectWord },),
+                ce(PopulatedWordCellGrid, {}),
               ),
               ce('div', { className: 'col-2' },
                 ce('button', { onClick: () => this.swtchTurns() }, 'Next Turn'),

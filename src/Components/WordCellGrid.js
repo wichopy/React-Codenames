@@ -1,7 +1,7 @@
 import { createElement as ce } from 'react'
 import WordCell from './WordCell'
 
-const WordCellGrid = ({ data: { loading, error, wordCell}, selectWord }) => {
+const WordCellGrid = ({ data: { loading, error, wordCell} }) => {
   const size = 5;
   const numberOfRows = Array(size).fill('');
 
@@ -17,7 +17,7 @@ const WordCellGrid = ({ data: { loading, error, wordCell}, selectWord }) => {
         return (
           ce('tr', {},
             wordCell.slice(i*5, i*5+5).map((cell, index) => {
-              return WordCell(i*5+index, cell.word, cell.type, cell.isEnabled, selectWord)
+              return WordCell(i*5+index, cell.word, cell.type, cell.isEnabled)
             })
           )
         )
