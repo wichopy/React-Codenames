@@ -12,4 +12,5 @@ type NewCell {
   type: String!
   isEnabled: Bool!
 }
+
 `;

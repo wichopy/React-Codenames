@@ -1,42 +1,38 @@
-import { createElement as ce } from 'react';
-import { gql, graphql } from 'graphql';
-import { WordCellGridQuery } from '../App';
+import { Component, createElement as ce } from 'react';
+import { graphql } from 'react-apollo';
+import { SelectWordMutation, WordCellGridQuery } from './gqlCalls'
 
-const SelectWord = ({ mutate }, id, value, type, isEnabled) => {
-  const handleClick = (position, value, type) => {
-    const newCell = {
+class SelectWord extends Component {
+  handleClick = (position, value, type) => {
+    const newWordCell = {
       index: position,
       word: value,
       type: type,
       isEnabled: false
     };
-    mutate({
-      variables: newCell,
+    this.props.mutate({
+      variables: newWordCell,
       refetchQueries: [ { query: WordCellGridQuery }]
     }).then( res => console.log(res));
   }
 
-  let className = 'word-cell ' + type
-  if (!isEnabled) {
-    className += ' disabled'
-  }
-  return ce('td', {
-    className: className,
-    name: id,
-    onClick: isEnabled? () => handleClick(id, value, type) : () => { return },
-  }, value);
-};
+  render() {
+    console.log("rendering...")
+    let { type, isEnabled, value, id } = this.props
+    let { handleClick } = this
+    console.log(this)
+    let className = 'word-cell ' + type
+    if (!isEnabled) {
+      className += ' disabled'
+    }
 
-const SelectWordMutation = gql`
-mutation updateCell(newCell: $newCell){
-  updateCell(newCell: $NewCell) {
-    index
-    word
-    type
-    isEnabled
+    return ce('td', {
+      className: className,
+      name: id,
+      onClick: isEnabled? () => handleClick(id, value, type) : () => { return },
+    }, value);
   }
-}
-`;
+};
 
 const SelectWordWithMutation = graphql(SelectWordMutation)(SelectWord);
 
