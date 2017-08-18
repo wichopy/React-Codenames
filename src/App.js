@@ -1,36 +1,20 @@
 import React, { createElement as ce } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import faker from 'faker';
 import {
   ApolloClient,
-  gql,
-  graphql,
   ApolloProvider,
   createNetworkInterface,
 } from 'react-apollo';
 
-import { typeDefs } from './schema';
+// import { typeDefs } from './schema';
 
 import Scoreboard from './Models/scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
+
 const networkInterface = createNetworkInterface({ uri: '/graphql'})
 
 const client = new ApolloClient({ networkInterface });
-
-const WordCellGridQuery = gql`
-  query allWordCells {
-    wordCell {
-        index
-        word
-        type
-        isEnabled
-    }
-  }
-`;
-
-const PopulatedWordCellGrid = graphql(WordCellGridQuery)(WordCellGrid);
 
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
@@ -52,27 +36,11 @@ const initialState = () => {
   }
 };
 
-
 class App extends React.Component {
   state = initialState();
 
-
   componentDidMount() {
     console.log('App mounted.')
-  }
-
-  selectWord = (position, value, type) => {
-    console.log('Selecting Word: ', position, value);
-    console.log(type)
-    if (type == this.state.currentTurn) {
-      this.pointsAdder(type)
-    }
-    let newGridValues = [...this.state.gridValues]
-    newGridValues[position].isEnabled = false
-    this.setState({ 
-      [position]: value,
-      gridValues: newGridValues,
-    });
   }
 
   swtchTurns = () => {
@@ -102,7 +70,7 @@ class App extends React.Component {
               ce('div', { className: 'col-3' }),
               ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
               ce('div', { className: 'col-8' },
-                ce(PopulatedWordCellGrid, { selectWord: this.selectWord },),
+                ce(WordCellGrid, {}),
               ),
               ce('div', { className: 'col-2' },
                 ce('button', { onClick: () => this.swtchTurns() }, 'Next Turn'),
