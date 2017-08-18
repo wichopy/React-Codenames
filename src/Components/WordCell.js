@@ -4,23 +4,21 @@ import { SelectWordMutation, WordCellGridQuery } from './gqlCalls'
 
 class SelectWord extends Component {
   handleClick = (position, value, type) => {
-    const newWordCell = {
+    const newCell = {
       index: position,
       word: value,
       type: type,
       isEnabled: false
     };
     this.props.mutate({
-      variables: newWordCell,
+      variables: { newCell: newCell },
       refetchQueries: [ { query: WordCellGridQuery }]
     }).then( res => console.log(res));
   }
 
   render() {
-    console.log("rendering...")
     let { type, isEnabled, value, id } = this.props
     let { handleClick } = this
-    console.log(this)
     let className = 'word-cell ' + type
     if (!isEnabled) {
       className += ' disabled'

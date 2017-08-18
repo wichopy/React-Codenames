@@ -1,8 +1,8 @@
 import { gql } from 'react-apollo';
 
 export const SelectWordMutation = gql`
-mutation updateWordCell {
-  updateCell(newCell: newWordCell) {
+mutation updateCell($newCell: newWordCell!) {
+  updateCell(newCell: $newCell) {
     index
   }
 }
