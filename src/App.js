@@ -8,10 +8,9 @@ import {
 
 // import { typeDefs } from './schema';
 
-import Scoreboard from './Models/scoreboard';
+import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
-import scoreboard from './Models/scoreboard'
 const networkInterface = createNetworkInterface({ uri: '/graphql'})
 networkInterface.use([{
   applyMiddleware(req,next) {
@@ -60,7 +59,7 @@ class App extends React.Component {
           ce('div', { className: 'container' },
             ce('div', { className: 'row'},
               ce('div', { className: 'col-3' }),
-              ce(scoreboard, {}),
+              ce(Scoreboard, {}),
               ce('div', { className: 'col-3' }),
               ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
               ce('div', { className: 'col-8' },
