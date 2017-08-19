@@ -1,10 +1,23 @@
-import words from '../Models/WordGrid.js'
+import words from '../Models/WordGrid'
+import { Scoreboard } from '../Models/Scoreboard'
+
+const pointsAdder = (type) => {
+  if (type == 'Red') {
+    Scoreboard.Red ++
+  }
+  if (type == 'Blue') {
+    Scoreboard.Blue ++
+  }
+}
 
 export const resolvers = {
   Query: {
     wordCells: () => {
       return words;
     },
+    score: () => {
+      return Scoreboard;
+    }
   },
   Mutation: {
     selectWord: (root, args) => {
@@ -14,6 +27,7 @@ export const resolvers = {
         }
       })
       words[selectedWord.index].isEnabled = false
+      pointsAdder(selectedWord.type)
       return words[selectedWord.index]
     }
   }

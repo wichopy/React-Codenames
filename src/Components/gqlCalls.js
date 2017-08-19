@@ -17,3 +17,12 @@ query allWordsQuery {
       isEnabled
   }
 }`;
+
+export const ScoreboardQuery = gql`
+  query getScore {
+    score {
+      Red
+      Blue
+    }
+  }
+`;

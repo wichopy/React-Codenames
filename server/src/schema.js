@@ -13,8 +13,14 @@ const typeDefs = `
     isEnabled: Boolean!
   }
 
+  type Scoreboard {
+    Red: Int
+    Blue: Int
+  }
+
   type Query {
     wordCells: [WordCell]
+    score: Scoreboard
   }
 
   type Mutation {
