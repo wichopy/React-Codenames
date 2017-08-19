@@ -3,15 +3,9 @@ import { graphql } from 'react-apollo';
 import { SelectWordMutation, WordCellGridQuery } from './gqlCalls'
 
 class SelectWord extends Component {
-  handleClick = (position, value, type) => {
-    const newCell = {
-      index: position,
-      word: value,
-      type: type,
-      isEnabled: false
-    };
+  handleClick = (position) => {
     this.props.mutate({
-      variables: { newCell: newCell },
+      variables: { index: position },
       refetchQueries: [ { query: WordCellGridQuery }]
     }).then( res => console.log(res));
   }

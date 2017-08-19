@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "apollo-test-utils": "^0.3.2",
+    "express": "^4.15.4",
     "faker": "^4.1.0",
     "graphql": "^0.10.5",
     "graphql-tools": "^1.1.0",
@@ -19,5 +20,5 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3001"
+  "proxy": "http://localhost:4000"
 }
