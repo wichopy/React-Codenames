@@ -1,4 +1,4 @@
-import { Component, createElement as ce } from 'react';
+import { createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
 import { ScoreboardQuery } from '../Components/gqlCalls';
 

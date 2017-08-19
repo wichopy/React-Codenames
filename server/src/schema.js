@@ -22,14 +22,21 @@ const typeDefs = `
     currentTurn: String!
   }
 
+  type Clue {
+    hint: String!
+    associated: Int!
+  }
+
   type Query {
     wordCells: [WordCell]
     score: Scoreboard
     turn: CurrentTurn
+    clues: [Clue]
   }
 
   type Mutation {
     selectWord(index: Int!): WordCell
+    addClue(hint: String!, associated: Int!): [Clue]
   }
 
 `;

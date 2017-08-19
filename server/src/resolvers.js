@@ -1,6 +1,7 @@
-import words from '../Models/WordGrid'
-import { Scoreboard } from '../Models/Scoreboard'
-import turnsManager from '../Models/TurnsManager'
+import Words from '../Models/WordGrid'
+import Scoreboard from '../Models/Scoreboard'
+import TurnsManager from '../Models/TurnsManager'
+import Cluesfeed from '../Models/CluesFeed'
 
 const pointsAdder = (type) => {
   if (type == 'Red') {
@@ -11,29 +12,41 @@ const pointsAdder = (type) => {
   }
 }
 
+const clueAdder = (hint, associated) => {
+  Cluesfeed.unshift({ hint, associated })
+}
+
 export const resolvers = {
   Query: {
     wordCells: () => {
-      return words;
+      return Words;
     },
     score: () => {
       return Scoreboard;
     },
     turn: () => {
-      return turnsManager.state
+      return TurnsManager.state
+    },
+    clues: () => {
+      return Cluesfeed
     }
   },
   Mutation: {
     selectWord: (root, args) => {
-      const selectedWord = words.find( (element, index) => {
+      const selectedWord = Words.find( (element, index) => {
         if (element.index == args.index) {
           return element
         }
       })
-      words[selectedWord.index].isEnabled = false
+
+      Words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
-      turnsManager.wordSelected(selectedWord.type)
-      return words[selectedWord.index]
+      TurnsManager.wordSelected(selectedWord.type)
+      return Words[selectedWord.index]
+    },
+    addClue: (_, args) => {
+    clueAdder(args.hint, args.associated)
+    return Cluesfeed
     }
   }
 };

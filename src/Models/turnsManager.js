@@ -10,7 +10,7 @@ const TurnsManager = ({ data}) => {
   if (error) {
     return ce('p', {}, error.message)
   }
-  return ce('p', {}, 'It is currently this team\'s turn:' + turn.currentTurn)
+  return ce('h3', {}, 'Current Turn:' + turn.currentTurn)
 }
 
 const CurrentTurnData = graphql(CurrentTurnQuery, {
