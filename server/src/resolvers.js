@@ -10,10 +10,12 @@ const pointsAdder = (type) => {
   if (type == 'Blue') {
     Scoreboard.Blue ++
   }
+  TurnsManager.listenToGuesses()
 }
 
 const clueAdder = (hint, associated) => {
   Cluesfeed.unshift({ hint, associated })
+  TurnsManager.listenToClues(associated)
 }
 
 export const resolvers = {
@@ -38,7 +40,10 @@ export const resolvers = {
           return element
         }
       })
-
+      if (TurnsManager.state.numberOfClues == 0) {
+        // Can't guess a word if you don't have a clue!
+        return
+      }
       Words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
       TurnsManager.wordSelected(selectedWord.type)
