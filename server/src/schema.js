@@ -38,6 +38,7 @@ const typeDefs = `
   type Mutation {
     selectWord(index: Int!): WordCell
     addClue(hint: String!, associated: Int!): [Clue]
+    skipTurn: Boolean
   }
 
 `;

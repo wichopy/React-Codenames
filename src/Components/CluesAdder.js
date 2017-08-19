@@ -18,7 +18,7 @@ class CluesAdder extends Component {
       hint: this.state.hint,
       associated: this.state.associated
     }
-    if (clue.hint === '' || clue.associated === '') {
+    if (clue.hint === '' || clue.associated === 0) {
       return
     }
       

@@ -56,8 +56,11 @@ export const resolvers = {
       return Words[selectedWord.index]
     },
     addClue: (_, args) => {
-    clueAdder(args.hint, args.associated)
-    return Cluesfeed
+      clueAdder(args.hint, args.associated)
+      return Cluesfeed
+    },
+    skipTurn: () => {
+      TurnsManager.switchTurn()
     }
   }
 };
