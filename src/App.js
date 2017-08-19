@@ -11,6 +11,8 @@ import {
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
+import CluesFeed from './Components/CluesFeed'
+
 const networkInterface = createNetworkInterface({ uri: '/graphql'})
 networkInterface.use([{
   applyMiddleware(req,next) {
@@ -51,7 +53,9 @@ class App extends React.Component {
               ce('div', { className: 'col-lg-8 col-xs-12' },
                 ce(WordCellGrid, {}),
               ),
-              ce('div', { className: 'col-lg-4 col-xs-12' }),
+              ce('div', { className: 'col-lg-4 col-xs-12' },
+                ce(CluesFeed, {},)
+              ),
             ),
 
           ),
