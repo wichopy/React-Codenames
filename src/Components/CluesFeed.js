@@ -22,16 +22,16 @@ class CluesFeed extends Component {
       ce('div', {className: 'Clues-adder' },
         ce(ClueAdder, {})
       ),
-      ce('ul', {},
+      ce('ul', { className: 'list-group'},
         clues.map((clue,i) => {
           if (!currentQueryPresent.clue && i === 0) {
-            return ce('li', { key: i }, ce('b', {}, ' ENTER A CLUE! '))
+            return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, ' ENTER A CLUE! '))
           }
           if (i === 0) {
             console.log(currentQueryPresent)
-            return ce('li', { key: i }, ce('b', {}, clue.hint + ' - ' + clue.associated))
+            return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, clue.hint + ' - ' + clue.associated))
           }
-          return ce('li', { key: i }, clue.hint + ' - ' + clue.associated)
+          return ce('li', { key: i, className: 'list-group-item' }, clue.hint + ' - ' + clue.associated)
         })
       )
     )
