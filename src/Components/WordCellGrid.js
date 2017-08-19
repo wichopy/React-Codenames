@@ -10,7 +10,7 @@ class WordCellGrid extends Component {
 
   render() {
     const { loading, error, wordCells } = this.props.data
-    const { size, numberOfRows } = this
+    const { numberOfRows } = this
     if (loading) {
       return ce('p', {}, 'Loading...')
     }

@@ -2,6 +2,7 @@ import { Component, createElement as ce} from 'react';
 import { CluesfeedQuery } from './gqlCalls';
 import { graphql } from 'react-apollo';
 
+import ClueAdder from './CluesAdder';
 class CluesFeed extends Component {
   render() {
     const { loading, error, clues } = this.props.data
@@ -13,9 +14,12 @@ class CluesFeed extends Component {
     }
     return ce('div', {},
       ce('h3', {}, 'Clues Goose:'),
+      ce('div', {className: 'Clues-adder' },
+        ce(ClueAdder, {})
+      ),
       ce('ul', {},
-        clues.map(clue => {
-          return ce('li', {}, clue.hint + ' - ' + clue.associated)
+        clues.map((clue,i) => {
+          return ce('li', { key: i }, clue.hint + ' - ' + clue.associated)
         })
       )
     )

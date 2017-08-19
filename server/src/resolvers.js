@@ -13,7 +13,7 @@ const pointsAdder = (type) => {
 }
 
 const clueAdder = (hint, associated) => {
-  Cluesfeed.push({ hint, associated })
+  Cluesfeed.unshift({ hint, associated })
 }
 
 export const resolvers = {
