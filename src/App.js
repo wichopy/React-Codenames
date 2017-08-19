@@ -8,12 +8,15 @@ import {
 
 // import { typeDefs } from './schema';
 
-import Scoreboard from './Models/scoreboard';
+import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
-
 const networkInterface = createNetworkInterface({ uri: '/graphql'})
-
+networkInterface.use([{
+  applyMiddleware(req,next) {
+    setTimeout(next, 500);
+  },
+}]);
 const client = new ApolloClient({ networkInterface });
 
 // Array Remove - By John Resig (MIT Licensed)
@@ -47,12 +50,7 @@ class App extends React.Component {
     TurnsManager.switchTurn();
     this.setState({ currentTurn: TurnsManager.state.currentTeamTurn });
   }
-
-  pointsAdder = (team) => {
-    Scoreboard.pointsAdder(team)
-    this.setState({ score: Scoreboard.state.score } );
-  }
-
+  
   render() {
     const { currentTurn, score } = this.state;
     return (
@@ -61,12 +59,7 @@ class App extends React.Component {
           ce('div', { className: 'container' },
             ce('div', { className: 'row'},
               ce('div', { className: 'col-3' }),
-              ce('div', { className: 'col-3' },
-                'Red Team - ' + score.Red,
-              ),
-              ce('div', { className: 'col-3' },
-                'Blue Team - ' + score.Blue,
-              ),
+              ce(Scoreboard, {}),
               ce('div', { className: 'col-3' }),
               ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
               ce('div', { className: 'col-8' },
