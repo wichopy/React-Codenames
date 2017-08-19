@@ -12,6 +12,10 @@ const pointsAdder = (type) => {
   }
 }
 
+const clueAdder = (hint, associated) => {
+  Cluesfeed.push({ hint, associated })
+}
+
 export const resolvers = {
   Query: {
     wordCells: () => {
@@ -39,6 +43,10 @@ export const resolvers = {
       pointsAdder(selectedWord.type)
       TurnsManager.wordSelected(selectedWord.type)
       return Words[selectedWord.index]
+    },
+    addClue: (_, args) => {
+    clueAdder(args.hint, args.associated)
+    return Cluesfeed
     }
   }
 };
