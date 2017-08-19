@@ -37,6 +37,9 @@ export const resolvers = {
     },
     clues: () => {
       return Cluesfeed
+    },
+    clue: () => {
+      return TurnsManager.state.numberOfClues > 0
     }
   },
   Mutation: {

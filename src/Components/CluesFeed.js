@@ -1,16 +1,21 @@
 import { Component, createElement as ce} from 'react';
-import { CluesfeedQuery } from './gqlCalls';
-import { graphql } from 'react-apollo';
+import { CluesfeedQuery, CurrentClueQuery } from './gqlCalls';
+import { graphql, compose } from 'react-apollo';
 
 import ClueAdder from './CluesAdder';
 class CluesFeed extends Component {
   render() {
-    const { loading, error, clues } = this.props.data
-    if (loading) {
+    const { Cluesfeed, currentQueryPresent } = this.props
+    if (Cluesfeed.loading || currentQueryPresent.loading) {
       return ce('p', {}, 'Loading...')
     }
-    if (error) {
-      return ce('p', {}, error.message)
+    if (Cluesfeed.error || currentQueryPresent.error) {
+      return ce('p', {}, "Error loading.")
+    }
+    let clues = [...Cluesfeed.clues];
+    console.log(this.props.currentQueryPresent)
+    if (!currentQueryPresent.clue) {
+      clues.unshift({ hint: '', associated: 0 })
     }
     return ce('div', {},
       ce('h3', {}, 'Clues Goose:'),
@@ -19,6 +24,13 @@ class CluesFeed extends Component {
       ),
       ce('ul', {},
         clues.map((clue,i) => {
+          if (!currentQueryPresent.clue && i === 0) {
+            return ce('li', { key: i }, ce('b', {}, ' ENTER A CLUE! '))
+          }
+          if (i === 0) {
+            console.log(currentQueryPresent)
+            return ce('li', { key: i }, ce('b', {}, clue.hint + ' - ' + clue.associated))
+          }
           return ce('li', { key: i }, clue.hint + ' - ' + clue.associated)
         })
       )
@@ -26,8 +38,19 @@ class CluesFeed extends Component {
   }
 }
 
-const PopulatedCluesfeed = graphql(CluesfeedQuery, {
-  options: { pollInterval: 5000 },
-})(CluesFeed);
+const PopulatedCluesfeed = compose(
+  graphql(CluesfeedQuery, {
+    name: 'Cluesfeed',
+    options: { pollInterval: 5000 },
+  }),
+  graphql(CurrentClueQuery, {
+    name: 'currentQueryPresent',
+    options: { pollInterval: 5000 },
+  }),
+)(CluesFeed)
+
+// graphql(CluesfeedQuery, {
+//   options: { pollInterval: 5000 },
+// })(CluesFeed);
 
 export default PopulatedCluesfeed

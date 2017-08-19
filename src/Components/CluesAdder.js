@@ -1,6 +1,6 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { CluesfeedQuery, AddClueMutation } from './gqlCalls'
+import { CluesfeedQuery, AddClueMutation, CurrentClueQuery } from './gqlCalls'
 
 class CluesAdder extends Component {
 
@@ -24,7 +24,7 @@ class CluesAdder extends Component {
       
     this.props.mutate({
       variables: clue,
-      refetchQueries: [ { query: CluesfeedQuery }]
+      refetchQueries: [ { query: CluesfeedQuery }, { query: CurrentClueQuery }]
     }).then( res => console.log(res));
   }
 
@@ -33,7 +33,7 @@ class CluesAdder extends Component {
 
     return ce('span', { className: 'form-group'},
       ce('input', { name: 'hint', type: "text", className: 'form-control', placeholder: 'New Clue', onKeyUp: handleKeyUp }),
-      ce('input', { name: 'associated', type: "number",  className: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
+      ce('input', { name: 'associated', type: "number", className: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
       ce('button', { className: 'btn', onClick: handleSubmit }, 'Add Clue'),
     );
   }

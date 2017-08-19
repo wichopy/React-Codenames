@@ -35,10 +35,10 @@ class App extends React.Component {
             ce(ToastrContainer, {}),
 
             ce('div', { className: 'row'},
-              ce('div', { className: 'col-lg-6 col-xs-6' },
+              ce('div', { className: 'col-lg-6 col-xs-8' },
                 ce(Scoreboard, {})
               ),
-              ce('div', { className: 'col-lg-6 col-xs-6' },
+              ce('div', { className: 'col-lg-6 col-xs-4' },
                 ce(TurnsManager, {}),
               )
             ),

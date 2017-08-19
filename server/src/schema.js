@@ -32,6 +32,7 @@ const typeDefs = `
     wordCells: [WordCell]
     score: Scoreboard
     turn: CurrentTurn
+    clue: Boolean!
     clues: [Clue]
   }
 

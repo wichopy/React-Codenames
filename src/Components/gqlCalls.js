@@ -59,3 +59,9 @@ export const SkipTurnMutation = gql`
     skipTurn
   }
 `;
+
+export const CurrentClueQuery = gql`
+  query {
+    clue
+  }
+`;
