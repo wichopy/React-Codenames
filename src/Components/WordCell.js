@@ -1,12 +1,12 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { SelectWordMutation, WordCellGridQuery, ScoreboardQuery } from './gqlCalls'
+import { SelectWordMutation, WordCellGridQuery, ScoreboardQuery, CurrentTurnQuery } from './gqlCalls'
 
 class SelectWord extends Component {
   handleClick = (position) => {
     this.props.mutate({
       variables: { index: position },
-      refetchQueries: [ { query: WordCellGridQuery }, { query: ScoreboardQuery }]
+      refetchQueries: [ { query: WordCellGridQuery }, { query: ScoreboardQuery }, { query: CurrentTurnQuery }]
     }).then( res => console.log(res));
   }
 

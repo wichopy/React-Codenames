@@ -32,6 +32,7 @@ export const resolvers = {
       })
       words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
+      turnsManager.wordSelected(selectedWord.type)
       return words[selectedWord.index]
     }
   }
