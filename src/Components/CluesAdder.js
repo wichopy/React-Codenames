@@ -32,8 +32,8 @@ class CluesAdder extends Component {
     let { handleSubmit, handleKeyUp } = this
 
     return ce('span', { className: 'form-group'},
-      ce('input', { name: 'hint', type: "text", classname: 'form-control', placeholder: 'New Clue', onKeyUp: handleKeyUp }),
-      ce('input', { name: 'associated', type: "number",  classname: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
+      ce('input', { name: 'hint', type: "text", className: 'form-control', placeholder: 'New Clue', onKeyUp: handleKeyUp }),
+      ce('input', { name: 'associated', type: "number",  className: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
       ce('button', { className: 'btn', onClick: handleSubmit }, 'Add Clue'),
     );
   }

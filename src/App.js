@@ -1,17 +1,17 @@
 import React, { createElement as ce } from 'react';
 import ToastrContainer from 'react-toastr-basic'
-import './App.css';
 import {
   ApolloClient,
   ApolloProvider,
   createNetworkInterface,
 } from 'react-apollo';
+import './App.css';
 
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
 import CluesFeed from './Components/CluesFeed'
-import SkipTurnButton from './Components/SkipTurnButton'
+import SkipTurnButton from './Components/SkipButtonWithConfirmation'
 
 const networkInterface = createNetworkInterface({ uri: '/graphql'})
 networkInterface.use([{
@@ -25,7 +25,7 @@ class App extends React.Component {
   componentDidMount() {
     console.log('App mounted.')
   }
-  
+
   render() {
     return (
       ce(ApolloProvider, { client },
@@ -52,7 +52,6 @@ class App extends React.Component {
                 ce(CluesFeed, {},)
               ),
             ),
-
           ),
         ),
       )
