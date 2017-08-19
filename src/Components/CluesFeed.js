@@ -1,33 +1,56 @@
 import { Component, createElement as ce} from 'react';
-import { CluesfeedQuery } from './gqlCalls';
-import { graphql } from 'react-apollo';
+import { CluesfeedQuery, CurrentClueQuery } from './gqlCalls';
+import { graphql, compose } from 'react-apollo';
 
 import ClueAdder from './CluesAdder';
 class CluesFeed extends Component {
   render() {
-    const { loading, error, clues } = this.props.data
-    if (loading) {
+    const { Cluesfeed, currentQueryPresent } = this.props
+    if (Cluesfeed.loading || currentQueryPresent.loading) {
       return ce('p', {}, 'Loading...')
     }
-    if (error) {
-      return ce('p', {}, error.message)
+    if (Cluesfeed.error || currentQueryPresent.error) {
+      return ce('p', {}, "Error loading.")
+    }
+    let clues = [...Cluesfeed.clues];
+    console.log(this.props.currentQueryPresent)
+    if (!currentQueryPresent.clue) {
+      clues.unshift({ hint: '', associated: 0 })
     }
     return ce('div', {},
       ce('h3', {}, 'Clues Goose:'),
       ce('div', {className: 'Clues-adder' },
         ce(ClueAdder, {})
       ),
-      ce('ul', {},
+      ce('ul', { className: 'list-group'},
         clues.map((clue,i) => {
-          return ce('li', { key: i }, clue.hint + ' - ' + clue.associated)
+          if (!currentQueryPresent.clue && i === 0) {
+            return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, ' ENTER A CLUE! '))
+          }
+          if (i === 0) {
+            console.log(currentQueryPresent)
+            return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, clue.hint + ' - ' + clue.associated))
+          }
+          return ce('li', { key: i, className: 'list-group-item' }, clue.hint + ' - ' + clue.associated)
         })
       )
     )
   }
 }
 
-const PopulatedCluesfeed = graphql(CluesfeedQuery, {
-  options: { pollInterval: 5000 },
-})(CluesFeed);
+const PopulatedCluesfeed = compose(
+  graphql(CluesfeedQuery, {
+    name: 'Cluesfeed',
+    options: { pollInterval: 5000 },
+  }),
+  graphql(CurrentClueQuery, {
+    name: 'currentQueryPresent',
+    options: { pollInterval: 5000 },
+  }),
+)(CluesFeed)
+
+// graphql(CluesfeedQuery, {
+//   options: { pollInterval: 5000 },
+// })(CluesFeed);
 
 export default PopulatedCluesfeed

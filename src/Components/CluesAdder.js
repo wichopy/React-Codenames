@@ -1,6 +1,6 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { CluesfeedQuery, AddClueMutation } from './gqlCalls'
+import { CluesfeedQuery, AddClueMutation, CurrentClueQuery } from './gqlCalls'
 
 class CluesAdder extends Component {
 
@@ -18,19 +18,23 @@ class CluesAdder extends Component {
       hint: this.state.hint,
       associated: this.state.associated
     }
+    if (clue.hint === '' || clue.associated === 0) {
+      return
+    }
+      
     this.props.mutate({
       variables: clue,
-      refetchQueries: [ { query: CluesfeedQuery }]
+      refetchQueries: [ { query: CluesfeedQuery }, { query: CurrentClueQuery }]
     }).then( res => console.log(res));
   }
 
   render() {
     let { handleSubmit, handleKeyUp } = this
 
-    return ce('span', {},
-      ce('input', { name: 'hint', type: "text", placeholder: 'New Clue', onKeyUp: handleKeyUp }),
-      ce('input', { name: 'associated', type: "number", placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
-      ce('button', { onClick: handleSubmit }, 'Add Clue'),
+    return ce('span', { className: 'form-group'},
+      ce('input', { name: 'hint', type: "text", className: 'form-control', placeholder: 'New Clue', onKeyUp: handleKeyUp }),
+      ce('input', { name: 'associated', type: "number", className: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
+      ce('button', { className: 'btn', onClick: handleSubmit }, 'Add Clue'),
     );
   }
 };

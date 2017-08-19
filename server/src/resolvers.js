@@ -37,6 +37,9 @@ export const resolvers = {
     },
     clues: () => {
       return Cluesfeed
+    },
+    clue: () => {
+      return TurnsManager.state.numberOfClues > 0
     }
   },
   Mutation: {
@@ -56,8 +59,11 @@ export const resolvers = {
       return Words[selectedWord.index]
     },
     addClue: (_, args) => {
-    clueAdder(args.hint, args.associated)
-    return Cluesfeed
+      clueAdder(args.hint, args.associated)
+      return Cluesfeed
+    },
+    skipTurn: () => {
+      TurnsManager.switchTurn()
     }
   }
 };

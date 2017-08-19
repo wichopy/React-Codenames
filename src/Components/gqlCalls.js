@@ -53,3 +53,15 @@ export const AddClueMutation = gql`
     }
   }
 `;
+
+export const SkipTurnMutation = gql`
+  mutation {
+    skipTurn
+  }
+`;
+
+export const CurrentClueQuery = gql`
+  query {
+    clue
+  }
+`;

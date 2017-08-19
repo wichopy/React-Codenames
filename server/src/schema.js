@@ -32,12 +32,14 @@ const typeDefs = `
     wordCells: [WordCell]
     score: Scoreboard
     turn: CurrentTurn
+    clue: Boolean!
     clues: [Clue]
   }
 
   type Mutation {
     selectWord(index: Int!): WordCell
     addClue(hint: String!, associated: Int!): [Clue]
+    skipTurn: Boolean
   }
 
 `;
