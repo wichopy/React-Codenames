@@ -11,6 +11,7 @@ import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
 import CluesFeed from './Components/CluesFeed'
+import SkipTurnButton from './Components/SkipTurnButton'
 
 const networkInterface = createNetworkInterface({ uri: '/graphql'})
 networkInterface.use([{
@@ -45,7 +46,7 @@ class App extends React.Component {
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-8 col-xs-12' },
                 ce(WordCellGrid, {}),
-                ce('button', { className: 'btn' }, 'Skip Turn'),
+                ce(SkipTurnButton, {}),
               ),
               ce('div', { className: 'col-lg-4 col-xs-12' },
                 ce(CluesFeed, {},)

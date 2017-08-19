@@ -53,3 +53,9 @@ export const AddClueMutation = gql`
     }
   }
 `;
+
+export const SkipTurnMutation = gql`
+  mutation {
+    skipTurn
+  }
+`;
