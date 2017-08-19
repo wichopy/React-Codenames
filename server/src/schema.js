@@ -18,14 +18,20 @@ const typeDefs = `
     Blue: Int
   }
 
+  type CurrentTurn {
+    currentTurn: String!
+  }
+
   type Query {
     wordCells: [WordCell]
     score: Scoreboard
+    turn: CurrentTurn
   }
 
   type Mutation {
     selectWord(index: Int!): WordCell
   }
+
 `;
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
