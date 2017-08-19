@@ -26,3 +26,11 @@ export const ScoreboardQuery = gql`
     }
   }
 `;
+
+export const CurrentTurnQuery = gql`
+  query currentTurnQuery {
+    turn {
+      currentTurn
+    }
+  }
+`;

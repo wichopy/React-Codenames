@@ -26,33 +26,13 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-const initialState = () => {
-  return {
-    users: [],
-    size: 5,
-    gridValues: [],
-    currentTurn: 'Red',
-    score: {
-      Red: 0,
-      Blue: 0,
-    }
-  }
-};
-
 class App extends React.Component {
-  state = initialState();
 
   componentDidMount() {
     console.log('App mounted.')
   }
-
-  swtchTurns = () => {
-    TurnsManager.switchTurn();
-    this.setState({ currentTurn: TurnsManager.state.currentTeamTurn });
-  }
   
   render() {
-    const { currentTurn, score } = this.state;
     return (
       ce(ApolloProvider, { client },
         ce('div', { className: 'App' },
@@ -61,13 +41,11 @@ class App extends React.Component {
               ce('div', { className: 'col-3' }),
               ce(Scoreboard, {}),
               ce('div', { className: 'col-3' }),
-              ce('div', { className: 'col-2' }, 'Current Team\'s Turn: ' + currentTurn),
+              ce(TurnsManager, {}),
               ce('div', { className: 'col-8' },
                 ce(WordCellGrid, {}),
               ),
-              ce('div', { className: 'col-2' },
-                ce('button', { onClick: () => this.swtchTurns() }, 'Next Turn'),
-              ),
+              ce('div', { className: 'col-2' }),
             ),
           ),
         ),
