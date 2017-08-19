@@ -3,12 +3,6 @@ import { graphql } from 'react-apollo';
 import { CluesfeedQuery, AddClueMutation } from './gqlCalls'
 
 class CluesAdder extends Component {
-  // handleClick = (position) => {
-  //   this.props.mutate({
-  //     variables: { index: position },
-  //     refetchQueries: [ { query: WordCellGridQuery }, { query: ScoreboardQuery }, { query: CurrentTurnQuery }]
-  //   }).then( res => console.log(res));
-  // }
 
   state = {
     hint: '',
