@@ -31,6 +31,7 @@ export const CurrentTurnQuery = gql`
   query currentTurnQuery {
     turn {
       currentTurn
+      winner
     }
   }
 `;

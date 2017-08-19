@@ -1,10 +1,16 @@
 class TurnsManager {
   state = {
     currentTurn: 'Red',
+    winner: '',
     numberOfClues: 0,
     numberOfGuesses: 0,
     nextTurn: 'Blue',
     guessedAllClues: false
+  }
+
+  declareWinner(team) {
+    this.state.winner = team
+    console.log(`Winning team is: ${team}`)
   }
 
   listenToClues = (clues) => {
@@ -45,16 +51,22 @@ class TurnsManager {
 
     if (type == 'Assassin') {
       // End game, Other team wins
-      if (state.currentTurn == 'Red') {
-        //Blue wins
+      if (this.state.currentTurn == 'Red') {
+        if (this.state.guessedAllClues) {
+          this.declareWinner('Red')
+        }
+        this.declareWinner('Blue')
       }
-      if (state.currentTurn == 'Blue') {
-        //Red wins
+      if (this.state.currentTurn == 'Blue') {
+        if (this.state.guessedAllClues) {
+          this.declareWinner('Blue')
+        }
+        this.declareWinner('Red')
       }
       return // Some winning notification.
     }
 
-    if (type != this.state.currentTurn && !this.state.guessedAllClues) {
+    if (type !== this.state.currentTurn && !this.state.guessedAllClues) {
       // Switch turns
       console.log('Woopse guessed word for other team, switch turns')
       this.switchTurn()

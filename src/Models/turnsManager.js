@@ -10,6 +10,9 @@ const TurnsManager = ({ data}) => {
   if (error) {
     return ce('p', {}, error.message)
   }
+  if (turn.winner !== '') {
+    return ce('h3', {}, turn.winner + ' TEAM WINS!!!!')
+  }
   return ce('h3', {}, 'Current Turn:' + turn.currentTurn)
 }
 

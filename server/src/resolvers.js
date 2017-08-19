@@ -6,9 +6,15 @@ import Cluesfeed from '../Models/CluesFeed'
 const pointsAdder = (type) => {
   if (type == 'Red') {
     Scoreboard.Red ++
+    if (Scoreboard.Red == 9) {
+      TurnsManager.declareWinner('Red')
+    }
   }
   if (type == 'Blue') {
     Scoreboard.Blue ++
+    if (Scoreboard.Blue == 8) {
+      TurnsManager.declareWinner('Blue')
+    }
   }
   TurnsManager.listenToGuesses()
 }

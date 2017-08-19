@@ -20,6 +20,7 @@ const typeDefs = `
 
   type CurrentTurn {
     currentTurn: String!
+    winner: String!
   }
 
   type Clue {
