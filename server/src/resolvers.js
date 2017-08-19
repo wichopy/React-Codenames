@@ -1,5 +1,6 @@
 import words from '../Models/WordGrid'
 import { Scoreboard } from '../Models/Scoreboard'
+import turnsManager from '../Models/TurnsManager'
 
 const pointsAdder = (type) => {
   if (type == 'Red') {
@@ -17,6 +18,9 @@ export const resolvers = {
     },
     score: () => {
       return Scoreboard;
+    },
+    turn: () => {
+      return turnsManager.state
     }
   },
   Mutation: {
@@ -28,6 +32,7 @@ export const resolvers = {
       })
       words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
+      turnsManager.wordSelected(selectedWord.type)
       return words[selectedWord.index]
     }
   }

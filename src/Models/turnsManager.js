@@ -1,15 +1,20 @@
-class TurnsManager {
-  state = {
-    currentTeamTurn: 'Red',
-  }
+import { createElement as ce } from 'react';
+import { graphql } from 'react-apollo';
+import { CurrentTurnQuery } from '../Components/gqlCalls';
 
-  switchTurn = () => {
-    if (this.state.currentTeamTurn === 'Red') {
-      this.state.currentTeamTurn = 'Blue';
-    } else {
-      this.state.currentTeamTurn = 'Red';
-    }
+const TurnsManager = ({ data}) => {
+  let {loading, error, turn } = data
+  if (loading) {
+    return ce('p', {}, 'Loading...')
   }
+  if (error) {
+    return ce('p', {}, error.message)
+  }
+  return ce('p', {}, 'It is currently this team\'s turn:' + turn.currentTurn)
 }
 
-export default new TurnsManager();
+const CurrentTurnData = graphql(CurrentTurnQuery, {
+  options: { pollInterval: 5000 },
+})(TurnsManager);
+
+export default CurrentTurnData;
