@@ -1,4 +1,5 @@
 import React, { createElement as ce } from 'react';
+import ToastrContainer from 'react-toastr-basic'
 import './App.css';
 import {
   ApolloClient,
@@ -29,6 +30,8 @@ class App extends React.Component {
       ce(ApolloProvider, { client },
         ce('div', { className: 'App' },
           ce('div', { className: 'container' },
+
+            ce(ToastrContainer, {}),
 
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-6 col-xs-6' },
