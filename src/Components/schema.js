@@ -1,16 +1,13 @@
 export const typeDefs = `
-type WordCell {
-  index: Int!
-  word: String!
-  type: String!
-  isEnabled: Bool!
-}
+  type WordCell {
+    type: String!
+    isEnabled: Boolean!
+    index: Int!
+    word: String!
+  }
 
-type NewCell {
-  index: Int!
-  word: String!
-  type: String!
-  isEnabled: Bool!
-}
+  type Query {
+    wordCells: [WordCell]
+  }
 
 `;
