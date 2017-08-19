@@ -34,3 +34,21 @@ export const CurrentTurnQuery = gql`
     }
   }
 `;
+
+export const CluesfeedQuery = gql`
+  query allCluesQuery {
+    clues {
+      hint
+      associated
+    }
+  }
+`;
+
+export const AddClueMutation = gql`
+  mutation addClue($hint: String!, $associated: Int!) {
+    addClue(hint: $hint, associated: $associated) {
+      hint
+      associated
+    }
+  }
+`;

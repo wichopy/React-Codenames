@@ -6,8 +6,6 @@ import {
   createNetworkInterface,
 } from 'react-apollo';
 
-// import { typeDefs } from './schema';
-
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
@@ -20,14 +18,6 @@ networkInterface.use([{
   },
 }]);
 const client = new ApolloClient({ networkInterface });
-
-// Array Remove - By John Resig (MIT Licensed)
-Array.prototype.remove = function(from, to) {
-  var rest = this.slice((to || from) + 1 || this.length);
-  this.length = from < 0 ? this.length + from : from;
-  return this.push.apply(this, rest);
-};
-
 class App extends React.Component {
 
   componentDidMount() {

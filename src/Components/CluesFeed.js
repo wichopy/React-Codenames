@@ -1,22 +1,29 @@
 import { Component, createElement as ce} from 'react';
-// import { WordCellGridQuery } from './gqlCalls';
+import { CluesfeedQuery } from './gqlCalls';
 import { graphql } from 'react-apollo';
 
-export default class CluesFeed extends Component {
+class CluesFeed extends Component {
   render() {
-    return (
-      ce('div', {},
-        ce('h1', {}, 'Clues Goose:'),
-        ce('ul', {},
-          ce('li', {}, 'Something'),
-          ce('li', {}, 'Something else'),
-        )
+    const { loading, error, clues } = this.props.data
+    if (loading) {
+      return ce('p', {}, 'Loading...')
+    }
+    if (error) {
+      return ce('p', {}, error.message)
+    }
+    return ce('div', {},
+      ce('h3', {}, 'Clues Goose:'),
+      ce('ul', {},
+        clues.map(clue => {
+          return ce('li', {}, clue.hint + ' - ' + clue.associated)
+        })
       )
     )
   }
 }
-// const PopulatedWordCellGrid = graphql(WordCellGridQuery, {
-//   options: { pollInterval: 5000 },
-// })(WordCellGrid);
 
-// export default PopulatedWordCellGrid;
+const PopulatedCluesfeed = graphql(CluesfeedQuery, {
+  options: { pollInterval: 5000 },
+})(CluesFeed);
+
+export default PopulatedCluesfeed
