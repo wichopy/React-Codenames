@@ -45,6 +45,7 @@ class App extends React.Component {
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-8 col-xs-12' },
                 ce(WordCellGrid, {}),
+                ce('button', { className: 'btn' }, 'Skip Turn'),
               ),
               ce('div', { className: 'col-lg-4 col-xs-12' },
                 ce(CluesFeed, {},)

@@ -18,6 +18,10 @@ class CluesAdder extends Component {
       hint: this.state.hint,
       associated: this.state.associated
     }
+    if (clue.hint === '' || clue.associated === '') {
+      return
+    }
+      
     this.props.mutate({
       variables: clue,
       refetchQueries: [ { query: CluesfeedQuery }]
@@ -27,10 +31,10 @@ class CluesAdder extends Component {
   render() {
     let { handleSubmit, handleKeyUp } = this
 
-    return ce('span', {},
-      ce('input', { name: 'hint', type: "text", placeholder: 'New Clue', onKeyUp: handleKeyUp }),
-      ce('input', { name: 'associated', type: "number", placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
-      ce('button', { onClick: handleSubmit }, 'Add Clue'),
+    return ce('span', { className: 'form-group'},
+      ce('input', { name: 'hint', type: "text", classname: 'form-control', placeholder: 'New Clue', onKeyUp: handleKeyUp }),
+      ce('input', { name: 'associated', type: "number",  classname: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
+      ce('button', { className: 'btn', onClick: handleSubmit }, 'Add Clue'),
     );
   }
 };
