@@ -37,16 +37,23 @@ class App extends React.Component {
       ce(ApolloProvider, { client },
         ce('div', { className: 'App' },
           ce('div', { className: 'container' },
+
             ce('div', { className: 'row'},
-              ce('div', { className: 'col-3' }),
-              ce(Scoreboard, {}),
-              ce('div', { className: 'col-3' }),
-              ce(TurnsManager, {}),
-              ce('div', { className: 'col-8' },
+              ce('div', { className: 'col-lg-6 col-xs-6' },
+                ce(Scoreboard, {})
+              ),
+              ce('div', { className: 'col-lg-6 col-xs-6' },
+                ce(TurnsManager, {}),
+              )
+            ),
+
+            ce('div', { className: 'row'},
+              ce('div', { className: 'col-lg-8 col-xs-12' },
                 ce(WordCellGrid, {}),
               ),
-              ce('div', { className: 'col-2' }),
+              ce('div', { className: 'col-lg-4 col-xs-12' }),
             ),
+
           ),
         ),
       )
