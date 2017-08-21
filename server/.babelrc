@@ -3,5 +3,9 @@
   "presets": [
     "es2015",
     "stage-0"
+  ],
+  "plugins": [
+    "syntax-class-properties",
+    "transform-class-properties"
   ]
 }

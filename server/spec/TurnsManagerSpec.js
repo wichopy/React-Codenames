@@ -1,7 +1,8 @@
-describe( "TurnsManager", function() {
-  var turnsManager = require('../Models/TurnsManager');
+import TurnsManager from '../Models/TurnsManager';
+describe( "TurnsManager", () => {
+  const turnsManager = new TurnsManager();
 
-  it("Can switch turns", function() {
+  it("Can switch turns", () => {
     expect(turnsManager.state.currentTurn).toEqual('Red');
 
     turnsManager.switchTurn()

@@ -75,4 +75,4 @@ class TurnsManager {
   }
 }
 
-export default new TurnsManager()
+export default TurnsManager;

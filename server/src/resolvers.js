@@ -3,25 +3,26 @@ import Scoreboard from '../Models/Scoreboard'
 import TurnsManager from '../Models/TurnsManager'
 import Cluesfeed from '../Models/CluesFeed'
 
+const turnsManager = new TurnsManager()
 const pointsAdder = (type) => {
   if (type == 'Red') {
     Scoreboard.Red ++
     if (Scoreboard.Red == 9) {
-      TurnsManager.declareWinner('Red')
+      turnsManager.declareWinner('Red')
     }
   }
   if (type == 'Blue') {
     Scoreboard.Blue ++
     if (Scoreboard.Blue == 8) {
-      TurnsManager.declareWinner('Blue')
+      turnsManager.declareWinner('Blue')
     }
   }
-  TurnsManager.listenToGuesses()
+  turnsManager.listenToGuesses()
 }
 
 const clueAdder = (hint, associated) => {
   Cluesfeed.unshift({ hint, associated })
-  TurnsManager.listenToClues(associated)
+  turnsManager.listenToClues(associated)
 }
 
 export const resolvers = {
@@ -33,13 +34,13 @@ export const resolvers = {
       return Scoreboard;
     },
     turn: () => {
-      return TurnsManager.state
+      return turnsManager.state
     },
     clues: () => {
       return Cluesfeed
     },
     clue: () => {
-      return TurnsManager.state.numberOfClues > 0
+      return turnsManager.state.numberOfClues > 0
     }
   },
   Mutation: {
@@ -49,13 +50,13 @@ export const resolvers = {
           return element
         }
       })
-      if (TurnsManager.state.numberOfClues == 0) {
+      if (turnsManager.state.numberOfClues == 0) {
         // Can't guess a word if you don't have a clue!
         return
       }
       Words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
-      TurnsManager.wordSelected(selectedWord.type)
+      turnsManager.wordSelected(selectedWord.type)
       return Words[selectedWord.index]
     },
     addClue: (_, args) => {
@@ -63,7 +64,7 @@ export const resolvers = {
       return Cluesfeed
     },
     skipTurn: () => {
-      TurnsManager.switchTurn()
+      turnsManager.switchTurn()
     }
   }
 };
