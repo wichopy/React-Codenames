@@ -32,5 +32,11 @@ describe( "TurnsManager", () => {
     turnsManager.declareWinner('Blue');
     expect(turnsManager.state.winner === 'Blue');
   })
+
+  it("Ends the game when a team picks the assassin", () => {
+    expect(turnsManager.state.currentTurn === 'Red')
+    turnsManager.wordSelected("Assassin")
+    expect(turnsManager.state.winner === 'Blue')
+  })
 })
 
