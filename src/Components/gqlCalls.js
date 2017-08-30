@@ -65,3 +65,14 @@ export const CurrentClueQuery = gql`
     clue
   }
 `;
+
+export const WordGridSubscription = gql`
+  subscription {
+    wordGridSubscription {
+      index
+      word
+      type
+      isEnabled
+    }
+  }
+`;

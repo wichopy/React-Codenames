@@ -4,16 +4,18 @@ import {
   graphiqlExpress,
 } from 'graphql-server-express';
 import bodyParser from 'body-parser';
-
 import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
-import { SubscriptionServer, Server } from 'subscriptions-transport-ws';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import cors from 'cors'
 
 import { schema } from './src/schema';
 
 const PORT = 4000;
 
 const server = express();
+server.use('*', cors({ origin: 'http://localhost:3000' }));
+
 const ws = createServer(server);
 ws.listen(PORT, () => {
   console.log('GraphQL WS Server running')

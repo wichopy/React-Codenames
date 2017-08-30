@@ -6,6 +6,8 @@ import {
   createNetworkInterface,
 } from 'react-apollo';
 import './App.css';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { addGraphQLSubscriptions } from 'add-graphql-subscriptions'
 
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
@@ -13,13 +15,26 @@ import WordCellGrid from './Components/WordCellGrid';
 import CluesFeed from './Components/CluesFeed'
 import SkipTurnButton from './Components/SkipButtonWithConfirmation'
 
-const networkInterface = createNetworkInterface({ uri: '/graphql'})
+const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
+  reconnect: true
+});
+
+
+const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/graphql'})
+
 networkInterface.use([{
   applyMiddleware(req,next) {
-    setTimeout(next, 500);
+    next()
   },
 }]);
-const client = new ApolloClient({ networkInterface });
+
+const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
+  networkInterface,
+  wsClient
+);
+
+const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscriptions });
+
 class App extends React.Component {
 
   componentDidMount() {

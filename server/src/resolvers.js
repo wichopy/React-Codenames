@@ -1,4 +1,4 @@
-import { PubSub, SubscriptionManager } from 'graphql-subscriptions';
+import { PubSub } from 'graphql-subscriptions';
 
 import Words from '../Models/WordGrid'
 import Scoreboard from '../Models/Scoreboard'
