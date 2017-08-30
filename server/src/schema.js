@@ -1,6 +1,5 @@
 import {
   makeExecutableSchema,
-  addMockFunctionsToSchema,
 } from 'graphql-tools'
 
 import { resolvers } from './resolvers';
@@ -40,6 +39,10 @@ const typeDefs = `
     selectWord(index: Int!): WordCell
     addClue(hint: String!, associated: Int!): [Clue]
     skipTurn: Boolean
+  }
+
+  type Subscription {
+    wordGridSubscription: [WordCell]
   }
 
 `;
