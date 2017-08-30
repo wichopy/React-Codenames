@@ -76,3 +76,18 @@ export const WordGridSubscription = gql`
     }
   }
 `;
+
+export const CluesFeedSubscription = gql`
+  subscription {
+    cluesFeedSubscription {
+      hint
+      associated
+    }
+  }
+`;
+
+export const CluePresentSubscription = gql`
+  subscription {
+    cluePresentSubscription
+  }
+`;

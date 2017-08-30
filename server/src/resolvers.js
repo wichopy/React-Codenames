@@ -6,6 +6,8 @@ import TurnsManager from '../Models/TurnsManager'
 import Cluesfeed from '../Models/CluesFeed'
 
 const wordGridSubscription = 'wordGridSubscription'
+const cluesFeedSubscription = 'cluesFeedSubscription'
+const cluePresentSubscription = 'cluePresentSubscription' 
 
 const pointsAdder = (type) => {
   if (type == 'Red') {
@@ -62,22 +64,33 @@ export const resolvers = {
       Words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
       TurnsManager.wordSelected(selectedWord.type)
-
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
 
       return Words[selectedWord.index]
     },
     addClue: (_, args) => {
       clueAdder(args.hint, args.associated)
+
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed })
+
       return Cluesfeed
     },
     skipTurn: () => {
       TurnsManager.switchTurn()
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
     }
   },
   Subscription: {
     wordGridSubscription: {
       subscribe: () => pubsub.asyncIterator(wordGridSubscription)
+    },
+    cluesFeedSubscription: {
+      subscribe: () => pubsub.asyncIterator(cluesFeedSubscription)
+    },
+    cluePresentSubscription: {
+      subscribe: () => pubsub.asyncIterator(cluePresentSubscription)
     }
   }
 };

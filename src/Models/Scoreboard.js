@@ -21,6 +21,5 @@ const Scoreboard = ({ data }) => {
 }
 
 const ScoreboardWithData = graphql(ScoreboardQuery, {
-  options: { pollInterval: 5000 },
 })(Scoreboard);
 export default ScoreboardWithData;

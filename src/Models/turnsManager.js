@@ -17,7 +17,6 @@ const TurnsManager = ({ data}) => {
 }
 
 const CurrentTurnData = graphql(CurrentTurnQuery, {
-  options: { pollInterval: 5000 },
 })(TurnsManager);
 
 export default CurrentTurnData;

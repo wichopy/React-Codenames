@@ -43,6 +43,8 @@ const typeDefs = `
 
   type Subscription {
     wordGridSubscription: [WordCell]
+    cluesFeedSubscription: [Clue]
+    cluePresentSubscription: Boolean
   }
 
 `;
