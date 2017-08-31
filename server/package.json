@@ -17,9 +17,11 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
     "express": "^4.15.2",
     "faker": "^4.1.0",
     "graphql-server-express": "^1.1.0",
+    "graphql-subscriptions": "^0.4.4",
     "graphql-tools": "^1.2.1"
   }
 }

@@ -1,5 +1,5 @@
 import { Component, createElement as ce } from 'react'
-import { WordCellGridQuery } from './gqlCalls';
+import { WordCellGridQuery, WordGridSubscription } from './gqlCalls';
 import { graphql } from 'react-apollo';
 
 import WordCellWithMutation from './WordCell'
@@ -8,8 +8,26 @@ class WordCellGrid extends Component {
   size = 5;
   numberOfRows = Array(this.size).fill('');
 
+  componentWillMount() {
+    this.props.WordCellGridQuery.subscribeToMore({
+      document: WordGridSubscription,
+      updateQuery: (previousState, {subscriptionData}) => {
+        if (!subscriptionData) {
+          return previousState
+        }
+        return {
+          wordCells: subscriptionData.data.wordGridSubscription
+        }
+      },
+    })
+  }
+
+  componentDidMount() {
+    console.log("Word Cell Grid Mounted")
+  }
+
   render() {
-    const { loading, error, wordCells } = this.props.data
+    const { loading, error, wordCells } = this.props.WordCellGridQuery
     const { numberOfRows } = this
     if (loading) {
       return ce('p', {}, 'Loading...')
@@ -34,7 +52,6 @@ class WordCellGrid extends Component {
 }
 
 const PopulatedWordCellGrid = graphql(WordCellGridQuery, {
-  options: { pollInterval: 5000 },
-})(WordCellGrid);
+  name: 'WordCellGridQuery'})(WordCellGrid);
 
 export default PopulatedWordCellGrid;

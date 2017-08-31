@@ -1,23 +1,40 @@
-import { createElement as ce } from 'react';
+import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { CurrentTurnQuery } from '../Components/gqlCalls';
+import { CurrentTurnQuery, CurrentTurnSubscription } from '../Components/gqlCalls';
 
-const TurnsManager = ({ data}) => {
-  let {loading, error, turn } = data
-  if (loading) {
-    return ce('p', {}, 'Loading...')
+class TurnsManager extends Component {
+  componentWillMount() {
+    this.props.CurrentTurnQuery.subscribeToMore({
+      document: CurrentTurnSubscription,
+      updateQuery: (prev, {subscriptionData}) => {
+        if (!subscriptionData) {
+          return prev
+        }
+        return {
+          turn: subscriptionData.data.currentTurnSubscription
+        }
+      }
+    })
   }
-  if (error) {
-    return ce('p', {}, error.message)
+
+  render() {
+    let {loading, error, turn } = this.props.CurrentTurnQuery
+    if (loading) {
+      return ce('p', {}, 'Loading...')
+    }
+    if (error) {
+      return ce('p', {}, error.message)
+    }
+    if (turn.winner !== '') {
+      return ce('h3', {}, turn.winner + ' TEAM WINS!!!!')
+    }
+    return ce('h3', {}, 'Current Turn:' + turn.currentTurn)
   }
-  if (turn.winner !== '') {
-    return ce('h3', {}, turn.winner + ' TEAM WINS!!!!')
-  }
-  return ce('h3', {}, 'Current Turn:' + turn.currentTurn)
 }
 
 const CurrentTurnData = graphql(CurrentTurnQuery, {
-  options: { pollInterval: 5000 },
+  name: 'CurrentTurnQuery'
+}, {
 })(TurnsManager);
 
 export default CurrentTurnData;
