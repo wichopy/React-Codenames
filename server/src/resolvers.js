@@ -8,6 +8,8 @@ import Cluesfeed from '../Models/CluesFeed'
 const wordGridSubscription = 'wordGridSubscription'
 const cluesFeedSubscription = 'cluesFeedSubscription'
 const cluePresentSubscription = 'cluePresentSubscription' 
+const scoreboardSubscription = 'scoreboardSubscription'
+const currentTurnSubscription = 'currentTurnSubscription'
 
 const pointsAdder = (type) => {
   if (type == 'Red') {
@@ -66,6 +68,8 @@ export const resolvers = {
       TurnsManager.wordSelected(selectedWord.type)
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
+      pubsub.publish(scoreboardSubscription, { scoreboardSubscription: Scoreboard })
+      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state })
 
       return Words[selectedWord.index]
     },
@@ -80,6 +84,7 @@ export const resolvers = {
     skipTurn: () => {
       TurnsManager.switchTurn()
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state.currentTurn })
     }
   },
   Subscription: {
@@ -91,6 +96,12 @@ export const resolvers = {
     },
     cluePresentSubscription: {
       subscribe: () => pubsub.asyncIterator(cluePresentSubscription)
+    },
+    scoreboardSubscription: {
+      subscribe: () => pubsub.asyncIterator(scoreboardSubscription)
+    },
+    currentTurnSubscription: {
+      subscribe: () => pubsub.asyncIterator(currentTurnSubscription)
     }
   }
 };

@@ -42,7 +42,6 @@ class CluesFeed extends Component {
       return ce('p', {}, "Error loading.")
     }
     let clues = [...Cluesfeed.clues];
-    console.log(this.props.currentQueryPresent)
     if (!currentQueryPresent.clue) {
       clues.unshift({ hint: '', associated: 0 })
     }
@@ -57,7 +56,6 @@ class CluesFeed extends Component {
             return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, ' ENTER A CLUE! '))
           }
           if (i === 0) {
-            console.log(currentQueryPresent)
             return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, clue.hint + ' - ' + clue.associated))
           }
           return ce('li', { key: i, className: 'list-group-item' }, clue.hint + ' - ' + clue.associated)

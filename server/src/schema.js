@@ -45,6 +45,8 @@ const typeDefs = `
     wordGridSubscription: [WordCell]
     cluesFeedSubscription: [Clue]
     cluePresentSubscription: Boolean
+    scoreboardSubscription: Scoreboard
+    currentTurnSubscription: CurrentTurn
   }
 
 `;

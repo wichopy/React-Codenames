@@ -88,6 +88,24 @@ export const CluesFeedSubscription = gql`
 
 export const CluePresentSubscription = gql`
   subscription {
-    cluePresentSubscription
+    cluePresentSubscription 
+  }
+`;
+
+export const ScoreboardSubscription = gql`
+  subscription {
+    scoreboardSubscription {
+      Red
+      Blue
+    }
+  }
+`;
+
+export const CurrentTurnSubscription = gql`
+  subscription {
+    currentTurnSubscription {
+      currentTurn
+      winner
+    }
   }
 `;
