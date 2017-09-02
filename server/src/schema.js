@@ -35,10 +35,21 @@ const typeDefs = `
     clues: [Clue]
   }
 
+  type Role {
+    spymaster: Boolean!
+    jwt: String
+  }
+
+  type Success {
+    success: Boolean!
+  }
+
   type Mutation {
     selectWord(index: Int!): WordCell
     addClue(hint: String!, associated: Int!): [Clue]
     skipTurn: Boolean
+    createSpymaster(password: String!): Success
+    loginAsSpymaster(password: String!): Role
   }
 
   type Subscription {
