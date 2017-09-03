@@ -97,9 +97,10 @@ export const resolvers = {
       return Cluesfeed
     },
     skipTurn: () => {
+      console.log('Team has decided to skip the rest of their turn.')
       TurnsManager.switchTurn()
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
-      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state.currentTurn })
+      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state })
     },
     createSpymaster: (_, args, ctx) => {
       password = args.password

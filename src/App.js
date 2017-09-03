@@ -14,16 +14,25 @@ import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordCellGrid';
 import CluesFeed from './Components/CluesFeed'
 import SkipTurnButton from './Components/SkipButtonWithConfirmation'
+import CreateSpymaster from './Components/Create'
+import LoginAsSpymaster from './Components/Login'
+import AuthService from './Services/AuthService'
 
 const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
-  reconnect: true
+  reconnect: true,
 });
-
 
 const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/graphql'})
 
 networkInterface.use([{
   applyMiddleware(req,next) {
+    let token = AuthService.getToken()
+    if (!req.options.headers) {
+      req.options.headers = {}
+    }
+    if (token) {
+      req.options.headers.authorization = `Bearer ${token}`
+    }
     next()
   },
 }]);
@@ -36,7 +45,6 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
 const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscriptions });
 
 class App extends React.Component {
-
   componentDidMount() {
     console.log('App mounted.')
   }
@@ -64,6 +72,8 @@ class App extends React.Component {
                 ce(SkipTurnButton, {}),
               ),
               ce('div', { className: 'col-lg-4 col-xs-12' },
+                ce(CreateSpymaster),
+                ce(LoginAsSpymaster),
                 ce(CluesFeed, {},)
               ),
             ),

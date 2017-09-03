@@ -9,14 +9,23 @@ class WordCellGrid extends Component {
   numberOfRows = Array(this.size).fill('');
 
   componentWillMount() {
+    // TODO: Do a refetch of data after a successful login.
     this.props.WordCellGridQuery.subscribeToMore({
       document: WordGridSubscription,
       updateQuery: (previousState, {subscriptionData}) => {
         if (!subscriptionData) {
           return previousState
         }
+        let newWordGrid = [...previousState.wordCells]
+        let newData =  subscriptionData.data.wordGridSubscription
+        for (let i = 0; i < 25; i++) {
+          if (newData[i].isEnabled !== previousState.wordCells[i].isEnabled) {
+            newWordGrid[i] = newData[i]
+            break
+          }
+        }
         return {
-          wordCells: subscriptionData.data.wordGridSubscription
+          wordCells: newWordGrid
         }
       },
     })

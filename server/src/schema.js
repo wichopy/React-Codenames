@@ -35,11 +35,6 @@ const typeDefs = `
     clues: [Clue]
   }
 
-  type Role {
-    spymaster: Boolean!
-    jwt: String
-  }
-
   type Success {
     success: Boolean!
   }
@@ -49,7 +44,7 @@ const typeDefs = `
     addClue(hint: String!, associated: Int!): [Clue]
     skipTurn: Boolean
     createSpymaster(password: String!): Success
-    loginAsSpymaster(password: String!): Role
+    loginAsSpymaster(password: String!): String
   }
 
   type Subscription {
