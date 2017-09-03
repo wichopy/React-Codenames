@@ -25,7 +25,7 @@ class CluesAdder extends Component {
     this.props.mutate({
       variables: clue,
       refetchQueries: [ { query: CluesfeedQuery }, { query: CurrentClueQuery }]
-    }).then( res => console.log(res));
+    }).then();
   }
 
   render() {
