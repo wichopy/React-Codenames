@@ -16,6 +16,7 @@ const currentTurnSubscription = 'currentTurnSubscription'
 //TODO: Have unique game sessions and store password inside of these game sessions instead of in resolvers.
 let password
 
+const turnsManager = new TurnsManager()
 const hideCells = wordCell => {
   if (wordCell.isEnabled === false) {
     return wordCell
@@ -26,21 +27,21 @@ const pointsAdder = (type) => {
   if (type == 'Red') {
     Scoreboard.Red ++
     if (Scoreboard.Red == 9) {
-      TurnsManager.declareWinner('Red')
+      turnsManager.declareWinner('Red')
     }
   }
   if (type == 'Blue') {
     Scoreboard.Blue ++
     if (Scoreboard.Blue == 8) {
-      TurnsManager.declareWinner('Blue')
+      turnsManager.declareWinner('Blue')
     }
   }
-  TurnsManager.listenToGuesses()
+  turnsManager.listenToGuesses()
 }
 
 const clueAdder = (hint, associated) => {
   Cluesfeed.unshift({ hint, associated })
-  TurnsManager.listenToClues(associated)
+  turnsManager.listenToClues(associated)
 }
 
 const pubsub = new PubSub()
@@ -58,13 +59,13 @@ export const resolvers = {
       return Scoreboard;
     },
     turn: () => {
-      return TurnsManager.state
+      return turnsManager.state
     },
     clues: () => {
       return Cluesfeed
     },
     clue: () => {
-      return TurnsManager.state.numberOfClues > 0
+      return turnsManager.state.numberOfClues > 0
     }
   },
   Mutation: {
@@ -74,33 +75,33 @@ export const resolvers = {
           return element
         }
       })
-      if (TurnsManager.state.numberOfClues == 0) {
+      if (turnsManager.state.numberOfClues == 0) {
         console.log('Can\'t guess a word if you don\'t have a clue!')
         return
       }
       Words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
-      TurnsManager.wordSelected(selectedWord.type)
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
+      turnsManager.wordSelected(selectedWord.type)
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
       pubsub.publish(scoreboardSubscription, { scoreboardSubscription: Scoreboard })
-      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state })
+      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
 
       return Words[selectedWord.index]
     },
     addClue: (_, args) => {
       clueAdder(args.hint, args.associated)
 
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed })
 
       return Cluesfeed
     },
     skipTurn: () => {
       console.log('Team has decided to skip the rest of their turn.')
-      TurnsManager.switchTurn()
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
-      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state })
+      turnsManager.switchTurn()
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
     },
     createSpymaster: (_, args, ctx) => {
       password = args.password
