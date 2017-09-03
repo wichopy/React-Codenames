@@ -75,33 +75,33 @@ export const resolvers = {
           return element
         }
       })
-      if (TurnsManager.state.numberOfClues == 0) {
+      if (turnsManager.state.numberOfClues == 0) {
         console.log('Can\'t guess a word if you don\'t have a clue!')
         return
       }
       Words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
-      TurnsManager.wordSelected(selectedWord.type)
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
+      turnsManager.wordSelected(selectedWord.type)
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
       pubsub.publish(scoreboardSubscription, { scoreboardSubscription: Scoreboard })
-      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state })
+      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
 
       return Words[selectedWord.index]
     },
     addClue: (_, args) => {
       clueAdder(args.hint, args.associated)
 
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed })
 
       return Cluesfeed
     },
     skipTurn: () => {
       console.log('Team has decided to skip the rest of their turn.')
-      TurnsManager.switchTurn()
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: TurnsManager.state.numberOfClues > 0 }) 
-      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: TurnsManager.state })
+      turnsManager.switchTurn()
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
     },
     createSpymaster: (_, args, ctx) => {
       password = args.password
