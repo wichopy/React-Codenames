@@ -16,6 +16,12 @@ const currentTurnSubscription = 'currentTurnSubscription'
 //TODO: Have unique game sessions and store password inside of these game sessions instead of in resolvers.
 let password
 
+const hideCells = wordCell => {
+  if (wordCell.isEnabled === false) {
+    return wordCell
+  }
+  return {...wordCell, type: 'Hidden'} 
+}
 const pointsAdder = (type) => {
   if (type == 'Red') {
     Scoreboard.Red ++
@@ -41,9 +47,10 @@ const pubsub = new PubSub()
 
 export const resolvers = {
   Query: {
-    wordCells: (_, args, ctx) => {
-      if (!ctx.spymaster) {
-        return Words.map(wordCell => {return {...wordCell, type: 'Hidden'} })
+    wordCells: (_, args, context) => {
+      if (!context.spymaster) {
+        const hideUnselectedCells = Words.map(hideCells)
+        return hideUnselectedCells
       }
       return Words;
     },
@@ -110,17 +117,15 @@ export const resolvers = {
   },
   Subscription: {
     wordGridSubscription: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(wordGridSubscription),
-        (payload, args, ctx) => {
-          if (!ctx.spymaster) {
-            return payload.wordGridSubscription.map(wordCell => { return {...wordCell, type: ''} })
-          }
-          else {
-            return payload
-          }
+      resolve: (payload, args, context) => {
+        if (!context.spymaster) {
+          return payload.wordGridSubscription.map(hideCells)
         }
-      ),
+        else {
+          return payload
+        }
+      },
+      subscribe: () => pubsub.asyncIterator(wordGridSubscription),
     },
     cluesFeedSubscription: {
       subscribe: () => pubsub.asyncIterator(cluesFeedSubscription)
