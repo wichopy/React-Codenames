@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "add-graphql-subscriptions": "^1.0.1",
     "apollo-test-utils": "^0.3.2",
     "autoprefixer": "7.1.1",
     "babel-core": "6.25.0",
@@ -44,6 +45,7 @@
     "react-error-overlay": "^1.0.9",
     "react-toastr-basic": "^1.1.14",
     "style-loader": "0.18.2",
+    "subscriptions-transport-ws": "^0.8.2",
     "sw-precache-webpack-plugin": "0.11.3",
     "url-loader": "0.5.9",
     "webpack": "2.6.1",
@@ -56,7 +58,6 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
-  "proxy": "http://localhost:4000",
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"

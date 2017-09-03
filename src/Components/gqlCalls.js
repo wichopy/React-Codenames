@@ -65,3 +65,61 @@ export const CurrentClueQuery = gql`
     clue
   }
 `;
+
+export const WordGridSubscription = gql`
+  subscription {
+    wordGridSubscription {
+      index
+      word
+      type
+      isEnabled
+    }
+  }
+`;
+
+export const CluesFeedSubscription = gql`
+  subscription {
+    cluesFeedSubscription {
+      hint
+      associated
+    }
+  }
+`;
+
+export const CluePresentSubscription = gql`
+  subscription {
+    cluePresentSubscription 
+  }
+`;
+
+export const ScoreboardSubscription = gql`
+  subscription {
+    scoreboardSubscription {
+      Red
+      Blue
+    }
+  }
+`;
+
+export const CurrentTurnSubscription = gql`
+  subscription {
+    currentTurnSubscription {
+      currentTurn
+      winner
+    }
+  }
+`;
+
+export const SetSpymasterMutation = gql`
+  mutation createSpymaster($password: String!){
+    createSpymaster(password: $password) {
+      success
+    }
+  }
+`;
+
+export const LoginAsSpymasterMutation = gql`
+  mutation loginAsSpymaster($password: String!) {
+    loginAsSpymaster(password: $password)
+  }
+`;

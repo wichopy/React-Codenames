@@ -78,6 +78,18 @@
   background-color: lightgrey;
 }
 
+.word-cell.Hidden {
+  background-color: grey;
+}
+
+.word-cell.Hidden.disabled:hover {
+  background-color: #4D4D4D;
+}
+
+.word-cell.Hidden:hover {
+  background-color: lightgrey;
+}
+
 .word-cell-wrapper {
   text-align: center;
   margin: auto;
