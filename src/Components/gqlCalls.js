@@ -109,3 +109,17 @@ export const CurrentTurnSubscription = gql`
     }
   }
 `;
+
+export const SetSpymasterMutation = gql`
+  mutation createSpymaster($password: String!){
+    createSpymaster(password: $password) {
+      success
+    }
+  }
+`;
+
+export const LoginAsSpymasterMutation = gql`
+  mutation loginAsSpymaster($password: String!) {
+    loginAsSpymaster(password: $password)
+  }
+`;
