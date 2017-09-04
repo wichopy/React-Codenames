@@ -17,12 +17,14 @@ const currentTurnSubscription = 'currentTurnSubscription'
 let password
 
 const turnsManager = new TurnsManager()
+
 const hideCells = wordCell => {
   if (wordCell.isEnabled === false) {
     return wordCell
   }
   return {...wordCell, type: 'Hidden'} 
 }
+
 const pointsAdder = (type) => {
   if (type == 'Red') {
     Scoreboard.Red ++
@@ -46,6 +48,7 @@ const cluesAllowed = () => {
   }
   return 8 - Scoreboard.Blue
 }
+
 const clueAdder = (hint, associated) => { 
   Cluesfeed.unshift({ hint, associated })
   turnsManager.listenToClues(associated)
