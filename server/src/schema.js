@@ -39,9 +39,13 @@ const typeDefs = `
     success: Boolean!
   }
 
+  type AddClueMessage {
+    maxClues: Int
+  }
+
   type Mutation {
     selectWord(index: Int!): WordCell
-    addClue(hint: String!, associated: Int!): [Clue]
+    addClue(hint: String!, associated: Int!): AddClueMessage
     skipTurn: Boolean
     createSpymaster(password: String!): Success
     loginAsSpymaster(password: String!): String

@@ -74,8 +74,4 @@ const PopulatedCluesfeed = compose(
   }),
 )(CluesFeed)
 
-// graphql(CluesfeedQuery, {
-//   options: { pollInterval: 5000 },
-// })(CluesFeed);
-
 export default PopulatedCluesfeed

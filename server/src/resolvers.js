@@ -17,12 +17,14 @@ const currentTurnSubscription = 'currentTurnSubscription'
 let password
 
 const turnsManager = new TurnsManager()
+
 const hideCells = wordCell => {
   if (wordCell.isEnabled === false) {
     return wordCell
   }
   return {...wordCell, type: 'Hidden'} 
 }
+
 const pointsAdder = (type) => {
   if (type == 'Red') {
     Scoreboard.Red ++
@@ -39,7 +41,15 @@ const pointsAdder = (type) => {
   turnsManager.listenToGuesses()
 }
 
-const clueAdder = (hint, associated) => {
+const cluesAllowed = () => {
+  let { currentTurn } = turnsManager.state
+  if (currentTurn  === 'Red') {
+    return 9 - Scoreboard.Red
+  }
+  return 8 - Scoreboard.Blue
+}
+
+const clueAdder = (hint, associated) => { 
   Cluesfeed.unshift({ hint, associated })
   turnsManager.listenToClues(associated)
 }
@@ -90,12 +100,15 @@ export const resolvers = {
       return Words[selectedWord.index]
     },
     addClue: (_, args) => {
+      let maxClues = cluesAllowed()
+      if (args.associated > maxClues) {
+        console.log('Too many clues. Reduce and try again.')
+        return { maxClues }
+      }
       clueAdder(args.hint, args.associated)
 
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed })
-
-      return Cluesfeed
     },
     skipTurn: () => {
       console.log('Team has decided to skip the rest of their turn.')
