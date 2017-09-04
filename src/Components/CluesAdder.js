@@ -1,6 +1,7 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
 import { CluesfeedQuery, AddClueMutation, CurrentClueQuery } from './gqlCalls'
+import { ToastDanger } from 'react-toastr-basic'
 
 class CluesAdder extends Component {
 
@@ -25,7 +26,11 @@ class CluesAdder extends Component {
     this.props.mutate({
       variables: clue,
       refetchQueries: [ { query: CluesfeedQuery }, { query: CurrentClueQuery }]
-    }).then();
+    }).then((res) => {
+      if (res.data.addClue.maxClues) {
+        ToastDanger(`Too many associated words! Reduce the number to less then ${res.data.addClue.maxClues}`)
+      }
+    });
   }
 
   render() {

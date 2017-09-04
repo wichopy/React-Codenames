@@ -48,8 +48,7 @@ export const CluesfeedQuery = gql`
 export const AddClueMutation = gql`
   mutation addClue($hint: String!, $associated: Int!) {
     addClue(hint: $hint, associated: $associated) {
-      hint
-      associated
+      maxClues
     }
   }
 `;
