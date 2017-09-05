@@ -3,12 +3,14 @@ import { graphql } from 'react-apollo';
 import { CluesfeedQuery, AddClueMutation, CurrentClueQuery } from './gqlCalls'
 import { ToastDanger } from 'react-toastr-basic'
 
+const defaultState = {
+  hint: '',
+  associated: 0,
+};
+
 class CluesAdder extends Component {
 
-  state = {
-    hint: '',
-    associated: 0,
-  }
+  state = defaultState
   //TODO: Make it a single text box and regex. For now, 2 textboxes with a button to submit.
   handleKeyUp = (event) => {
     this.setState({ [event.target.name]: event.target.value })
@@ -29,7 +31,15 @@ class CluesAdder extends Component {
     }).then((res) => {
       if (res.data.addClue && res.data.addClue.maxClues) {
         ToastDanger(`Too many associated words! Reduce the number to less then ${res.data.addClue.maxClues}`)
+        return
       }
+      if (res.data.addClue && res.data.addClue.secondClue) {
+        ToastDanger('Only one clue can be added per turn!')
+        return
+      }
+      this.setState(defaultState)
+      this.refs.hint.value = ''
+      this.refs.associated.value = null
     });
   }
 
@@ -37,8 +47,8 @@ class CluesAdder extends Component {
     let { handleSubmit, handleKeyUp } = this
 
     return ce('span', { className: 'form-group'},
-      ce('input', { name: 'hint', type: "text", className: 'form-control', placeholder: 'New Clue', onKeyUp: handleKeyUp }),
-      ce('input', { name: 'associated', type: "number", className: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
+      ce('input', { ref: 'hint', name: 'hint', type: "text", className: 'form-control', placeholder: 'New Clue', onKeyUp: handleKeyUp }),
+      ce('input', { ref: 'associated', name: 'associated', type: "number", className: 'form-control', placeholder: 'Goes with this number words', onKeyUp: handleKeyUp }),
       ce('button', { className: 'btn', onClick: handleSubmit }, 'Add Clue'),
     );
   }

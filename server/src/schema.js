@@ -41,6 +41,7 @@ const typeDefs = `
 
   type AddClueMessage {
     maxClues: Int
+    secondClue: Boolean
   }
 
   type Mutation {

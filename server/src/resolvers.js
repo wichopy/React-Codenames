@@ -49,6 +49,10 @@ const cluesAllowed = () => {
   return 8 - Scoreboard.Blue
 }
 
+const clueExists = () => {
+  return turnsManager.state.numberOfClues !== 0
+}
+
 const clueAdder = (hint, associated) => { 
   Cluesfeed.unshift({ hint, associated })
   turnsManager.listenToClues(associated)
@@ -105,6 +109,11 @@ export const resolvers = {
         console.log('Too many clues. Reduce and try again.')
         return { maxClues }
       }
+      if (clueExists()) {
+        console.log('Already entered clue for the turn.')
+        return { secondClue: true }
+      }
+
       clueAdder(args.hint, args.associated)
 
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
