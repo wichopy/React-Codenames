@@ -49,6 +49,7 @@ export const AddClueMutation = gql`
   mutation addClue($hint: String!, $associated: Int!) {
     addClue(hint: $hint, associated: $associated) {
       maxClues
+      secondClue
     }
   }
 `;
