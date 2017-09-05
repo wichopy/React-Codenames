@@ -27,7 +27,7 @@ class CluesAdder extends Component {
       variables: clue,
       refetchQueries: [ { query: CluesfeedQuery }, { query: CurrentClueQuery }]
     }).then((res) => {
-      if (res.data.addClue.maxClues) {
+      if (res.data.addClue && res.data.addClue.maxClues) {
         ToastDanger(`Too many associated words! Reduce the number to less then ${res.data.addClue.maxClues}`)
       }
     });
