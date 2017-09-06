@@ -56,9 +56,9 @@ class CluesFeed extends Component {
             return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, ' ENTER A CLUE! '))
           }
           if (i === 0) {
-            return ce('li', { key: i, className: 'list-group-item' }, ce('b', {}, clue.hint + ' - ' + clue.associated))
+            return ce('li', { key: i, className: 'list-group-item ' + clue.team }, ce('b', {}, clue.hint + ' - ' + clue.associated))
           }
-          return ce('li', { key: i, className: 'list-group-item' }, clue.hint + ' - ' + clue.associated)
+          return ce('li', { key: i, className: 'list-group-item ' + clue.team + ' old' }, clue.hint + ' - ' + clue.associated)
         })
       )
     )

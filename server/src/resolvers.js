@@ -53,8 +53,8 @@ const clueExists = () => {
   return turnsManager.state.numberOfClues !== 0
 }
 
-const clueAdder = (hint, associated) => { 
-  Cluesfeed.unshift({ hint, associated })
+const clueAdder = (hint, associated, team) => { 
+  Cluesfeed.unshift({ hint, associated, team })
   turnsManager.listenToClues(associated)
 }
 
@@ -114,7 +114,7 @@ export const resolvers = {
         return { secondClue: true }
       }
 
-      clueAdder(args.hint, args.associated)
+      clueAdder(args.hint, args.associated, turnsManager.state.currentTurn)
 
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed })

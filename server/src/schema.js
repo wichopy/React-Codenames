@@ -25,6 +25,7 @@ const typeDefs = `
   type Clue {
     hint: String!
     associated: Int!
+    team: String!
   }
 
   type Query {
