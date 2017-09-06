@@ -41,6 +41,7 @@ export const CluesfeedQuery = gql`
     clues {
       hint
       associated
+      team
     }
   }
 `;
@@ -82,6 +83,7 @@ export const CluesFeedSubscription = gql`
     cluesFeedSubscription {
       hint
       associated
+      team
     }
   }
 `;
