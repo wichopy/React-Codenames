@@ -34,6 +34,7 @@ const typeDefs = `
     turn: CurrentTurn
     clue: Boolean!
     clues: [Clue]
+    endGame: Boolean!
   }
 
   type Success {
@@ -51,6 +52,7 @@ const typeDefs = `
     skipTurn: Boolean
     createSpymaster(password: String!): Success
     loginAsSpymaster(password: String!): String
+    newGame: Boolean
   }
 
   type Subscription {
@@ -59,6 +61,7 @@ const typeDefs = `
     cluePresentSubscription: Boolean
     scoreboardSubscription: Scoreboard
     currentTurnSubscription: CurrentTurn
+    endGameSubscription: Boolean
   }
 
 `;

@@ -63,7 +63,7 @@ class TurnsManager {
         }
         this.declareWinner('Red')
       }
-      return // Some winning notification.
+      return 'endGame'
     }
 
     if (type !== this.state.currentTurn && !this.state.guessedAllClues) {

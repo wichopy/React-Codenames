@@ -125,3 +125,21 @@ export const LoginAsSpymasterMutation = gql`
     loginAsSpymaster(password: $password)
   }
 `;
+
+export const NewGameMutation = gql`
+  mutation {
+    newGame
+  }
+`;
+
+export const EndGameSubscription = gql`
+  subscription {
+    endGameSubscription
+  }
+`;
+
+export const EndGameQuery = gql`
+  query {
+    endGame
+  }
+`;

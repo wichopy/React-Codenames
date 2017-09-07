@@ -1,5 +1,11 @@
-const CluesFeed = [
+class Cluesfeed {
+  cluesFeed = []
+  addToCluesFeed = (clue) => { 
+    this.cluesFeed.unshift(clue)
+  }
+  resetCluesFeed = () => {
+    this.cluesFeed = []
+  }
+}
 
-]
-
-export default CluesFeed
+export default Cluesfeed
