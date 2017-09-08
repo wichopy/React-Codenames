@@ -1,6 +1,9 @@
 To setup project: 
+
 `git clone git@github.com:wichopy/React-Codenames.git`
+
 `cd React-Codenames`
+
 `npm install; cd server; npm install`
 
 The client app is written in React/Apollo and can be run in the root folder. 
