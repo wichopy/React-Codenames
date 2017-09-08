@@ -8,8 +8,8 @@ To setup project:
 
 The client app is written in React/Apollo and can be run in the root folder. 
 The server runs on Express/GraphQL and is run in the `/server` folder.
-JWT is used for auth, so make sure you make a copy of the sameple .env file and make up your own secret.
-May need to globally install nodemon and bable-cli (not node-babel)
+JWT is used for auth, so make sure you rename the `.env_sample` file to `.env` and make up your own secret.
+May need to globally install nodemon and babel-cli (not node-babel) with `npm install -g nodemon babel-cli`.
 
 To run the client and server, run `npm start` in:
   - one terminal window in the root folder (./) of this repo:
