@@ -1,11 +1,18 @@
+const defaultState = {
+  currentTurn: 'Red',
+  winner: '',
+  numberOfClues: 0,
+  numberOfGuesses: 0,
+  nextTurn: 'Blue',
+  guessedAllClues: false
+}
+
 class TurnsManager {
-  state = {
-    currentTurn: 'Red',
-    winner: '',
-    numberOfClues: 0,
-    numberOfGuesses: 0,
-    nextTurn: 'Blue',
-    guessedAllClues: false
+
+  state = defaultState
+
+  reset = () => {
+    this.state = defaultState
   }
 
   declareWinner(team) {
@@ -51,6 +58,7 @@ class TurnsManager {
 
     if (type == 'Assassin') {
       // End game, Other team wins
+      // BUG: Not declaring winner properly on a assassin lose.
       if (this.state.currentTurn == 'Red') {
         if (this.state.guessedAllClues) {
           this.declareWinner('Red')
@@ -63,7 +71,7 @@ class TurnsManager {
         }
         this.declareWinner('Red')
       }
-      return // Some winning notification.
+      return 'endGame'
     }
 
     if (type !== this.state.currentTurn && !this.state.guessedAllClues) {

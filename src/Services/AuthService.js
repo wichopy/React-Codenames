@@ -4,9 +4,15 @@ class AuthService {
   role = 'Player'
 
   cachetoken = (token) => {
-    localStorage.setItem('token', token)
-    this.role = 'Spymaster'
-    console.log('cachedtoken')
+    if (token !== null) {
+      localStorage.setItem('token', token)
+      this.role = 'Spymaster'
+      console.log('cachedtoken')
+      return Promise.resolve()
+    } else {
+      console.log('login failed')
+      return Promise.reject()
+    }
   }
 
   getToken = () => {

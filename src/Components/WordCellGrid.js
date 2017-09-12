@@ -30,9 +30,15 @@ class WordCellGrid extends Component {
       },
     })
   }
-
+  
   componentDidMount() {
+    this.props.callbacks['WordCellGridRefetch'] = this.refetch
     console.log("Word Cell Grid Mounted")
+  }
+
+  refetch = () => {
+    console.log('refetching words')
+    this.props.WordCellGridQuery.refetch()
   }
 
   render() {

@@ -1,10 +1,10 @@
 import { PubSub, withFilter } from 'graphql-subscriptions';
 import jwt from 'jsonwebtoken'
 
-import Words from '../Models/WordGrid'
+import WordGrid from '../Models/WordGrid'
 import Scoreboard from '../Models/Scoreboard'
 import TurnsManager from '../Models/TurnsManager'
-import Cluesfeed from '../Models/CluesFeed'
+import CluesFeed from '../Models/CluesFeed'
 import { JWT_SECRET } from '../config'
 
 const wordGridSubscription = 'wordGridSubscription'
@@ -12,11 +12,17 @@ const cluesFeedSubscription = 'cluesFeedSubscription'
 const cluePresentSubscription = 'cluePresentSubscription' 
 const scoreboardSubscription = 'scoreboardSubscription'
 const currentTurnSubscription = 'currentTurnSubscription'
+const endGameSubscription = 'endGameSubscription'
 
 //TODO: Have unique game sessions and store password inside of these game sessions instead of in resolvers.
 let password
 
-const turnsManager = new TurnsManager()
+let turnsManager = new TurnsManager()
+let scoreBoard = new Scoreboard()
+let wordGrid = new WordGrid()
+let Cluesfeed = new CluesFeed()
+wordGrid.generate()
+let Words = wordGrid.wordGrid
 
 const hideCells = wordCell => {
   if (wordCell.isEnabled === false) {
@@ -27,15 +33,17 @@ const hideCells = wordCell => {
 
 const pointsAdder = (type) => {
   if (type == 'Red') {
-    Scoreboard.Red ++
-    if (Scoreboard.Red == 9) {
+    scoreBoard.Red ++
+    if (scoreBoard.Red == 9) {
       turnsManager.declareWinner('Red')
+      pubsub.publish(endGameSubscription, { endGameSubscription: true })
     }
   }
   if (type == 'Blue') {
-    Scoreboard.Blue ++
-    if (Scoreboard.Blue == 8) {
+    scoreBoard.Blue ++
+    if (scoreBoard.Blue == 8) {
       turnsManager.declareWinner('Blue')
+      pubsub.publish(endGameSubscription, { endGameSubscription: true })
     }
   }
   turnsManager.listenToGuesses()
@@ -44,9 +52,9 @@ const pointsAdder = (type) => {
 const cluesAllowed = () => {
   let { currentTurn } = turnsManager.state
   if (currentTurn  === 'Red') {
-    return 9 - Scoreboard.Red
+    return 9 - scoreBoard.Red
   }
-  return 8 - Scoreboard.Blue
+  return 8 - scoreBoard.Blue
 }
 
 const clueExists = () => {
@@ -54,7 +62,7 @@ const clueExists = () => {
 }
 
 const clueAdder = (hint, associated, team) => { 
-  Cluesfeed.unshift({ hint, associated, team })
+  Cluesfeed.addToCluesFeed({ hint, associated, team })
   turnsManager.listenToClues(associated)
 }
 
@@ -70,16 +78,19 @@ export const resolvers = {
       return Words;
     },
     score: () => {
-      return Scoreboard;
+      return scoreBoard;
     },
     turn: () => {
       return turnsManager.state
     },
     clues: () => {
-      return Cluesfeed
+      return Cluesfeed.cluesFeed
     },
     clue: () => {
       return turnsManager.state.numberOfClues > 0
+    },
+    endGame: () => {
+      return turnsManager.state.winner !== ''
     }
   },
   Mutation: {
@@ -95,10 +106,12 @@ export const resolvers = {
       }
       Words[selectedWord.index].isEnabled = false
       pointsAdder(selectedWord.type)
-      turnsManager.wordSelected(selectedWord.type)
+      if (turnsManager.wordSelected(selectedWord.type) === 'endGame') {
+        pubsub.publish(endGameSubscription, { endGameSubscription: true })
+      }
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
-      pubsub.publish(scoreboardSubscription, { scoreboardSubscription: Scoreboard })
+      pubsub.publish(scoreboardSubscription, { scoreboardSubscription: scoreBoard })
       pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
 
       return Words[selectedWord.index]
@@ -117,7 +130,7 @@ export const resolvers = {
       clueAdder(args.hint, args.associated, turnsManager.state.currentTurn)
 
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
-      pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed })
+      pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed.cluesFeed })
     },
     skipTurn: () => {
       console.log('Team has decided to skip the rest of their turn.')
@@ -137,6 +150,14 @@ export const resolvers = {
         ctx.spymaster = true
         return token
       }
+    },
+    newGame: () => {
+      turnsManager.reset()
+      scoreBoard.reset()
+      wordGrid.generate()
+      Words = wordGrid.wordGrid
+      Cluesfeed.reset()
+      pubsub.publish(endGameSubscription, { endGameSubscription: false })
     }
   },
   Subscription: {
@@ -162,6 +183,9 @@ export const resolvers = {
     },
     currentTurnSubscription: {
       subscribe: () => pubsub.asyncIterator(currentTurnSubscription)
+    },
+    endGameSubscription: {
+      subscribe: () => pubsub.asyncIterator(endGameSubscription)
     }
   }
 };
