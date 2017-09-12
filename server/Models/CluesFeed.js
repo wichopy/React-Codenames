@@ -1,9 +1,11 @@
 class Cluesfeed {
   cluesFeed = []
+
   addToCluesFeed = (clue) => { 
     this.cluesFeed.unshift(clue)
   }
-  resetCluesFeed = () => {
+
+  reset = () => {
     this.cluesFeed = []
   }
 }

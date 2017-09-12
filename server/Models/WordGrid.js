@@ -15,7 +15,6 @@ class wordGrid {
   }
 
   _setBackgrounds = (colorlessGrid, size) => {
-    console.log(colorlessGrid)
     const gridValues = colorlessGrid;
     let populateCount = 0;
 

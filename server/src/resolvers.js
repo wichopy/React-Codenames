@@ -152,11 +152,11 @@ export const resolvers = {
       }
     },
     newGame: () => {
-      turnsManager = new TurnsManager()
-      scoreBoard = new Scoreboard()
+      turnsManager.reset()
+      scoreBoard.reset()
       wordGrid.generate()
       Words = wordGrid.wordGrid
-      Cluesfeed.resetCluesFeed()
+      Cluesfeed.reset()
       pubsub.publish(endGameSubscription, { endGameSubscription: false })
     }
   },
