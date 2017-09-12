@@ -25,6 +25,10 @@ const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
 
 const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/graphql'})
 
+const authCallbacks = {};
+const addAuthListener = (key, callback) => {
+  authCallbacks[key] = callback
+}
 networkInterface.use([{
   applyMiddleware(req,next) {
     let token = AuthService.getToken()
@@ -32,6 +36,7 @@ networkInterface.use([{
       req.options.headers = {}
     }
     if (token) {
+      Object.keys(authCallbacks).forEach(key => authCallbacks[key]() )
       req.options.headers.authorization = `Bearer ${token}`
     }
     next()
@@ -48,13 +53,20 @@ const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscrip
 class App extends React.Component {
   state = {
     callbacks: {},
+    token: AuthService.getToken()
   }
 
   componentDidMount() {
     console.log('App mounted.')
+    addAuthListener('authenticated', this.listenForAuth)
+  }
+
+  listenForAuth = () => {
+    this.setState({ token: AuthService.getToken() })
   }
 
   render() {
+    let { token } = this.state
     return (
       ce(ApolloProvider, { client },
         ce('div', { className: 'App' },
@@ -78,9 +90,9 @@ class App extends React.Component {
                 ce(NewGameWrapper, {}),
               ),
               ce('div', { className: 'col-lg-4 col-xs-12' },
-                ce(CreateSpymaster),
-                ce(LoginAsSpymaster, { callbacks: this.state.callbacks }),
-                ce(CluesFeed, {},)
+                token ? '' : ce(CreateSpymaster),
+                token ? '' : ce(LoginAsSpymaster, { callbacks: this.state.callbacks }),
+                ce(CluesFeed, { token },)
               ),
             ),
           ),
