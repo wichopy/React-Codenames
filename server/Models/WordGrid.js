@@ -66,7 +66,7 @@ class wordGrid {
   }
 
   reshuffleCell = (index) => {
-    this.wordGrid[index] = faker.random.word()
+    this.wordGrid[index] = {...this.wordGrid[index], word: faker.random.word()}
   }
 }
 

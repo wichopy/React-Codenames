@@ -3,7 +3,9 @@ import { graphql } from 'react-apollo';
 import { SelectWordMutation, WordCellGridQuery, ScoreboardQuery, CurrentTurnQuery } from './gqlCalls'
 import { ToastDanger } from 'react-toastr-basic'
 
-class SelectWord extends Component {
+import WordCellValue from './WordCellValue'
+
+class WordCell extends Component {
   handleCellClick = (position) => {
     this.props.mutate({
       variables: { index: position },
@@ -16,15 +18,9 @@ class SelectWord extends Component {
     });
   }
 
-  handleWordClick = (ev, id) => {
-    ev.stopPropagation()
-    console.log('wordClick')
-    console.log(id)
-  }
-
   render() {
     let { type, isEnabled, value, id } = this.props
-    let { handleCellClick, handleWordClick } = this
+    let { handleCellClick } = this
     let className = 'word-cell ' + type
     if (!isEnabled) {
       className += ' disabled'
@@ -33,11 +29,14 @@ class SelectWord extends Component {
     return ce('td', {
       className: className,
       name: id,
-      onClick: isEnabled? () => handleCellClick(id) : () => { return },
-    }, ce('span', { name: id, className: 'word-cell-value', onClick: (ev) => handleWordClick(ev, id) }, value));
+      onClick: isEnabled ? 
+               () => handleCellClick(id) : 
+               () => { return },
+      }, ce(WordCellValue, { id, value }),
+    );
   }
 };
 
-const SelectWordWithMutation = graphql(SelectWordMutation)(SelectWord);
+const WordCellWithMutation = graphql(SelectWordMutation)(WordCell);
 
-export default SelectWordWithMutation;
+export default WordCellWithMutation;

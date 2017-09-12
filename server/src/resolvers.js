@@ -158,6 +158,11 @@ export const resolvers = {
       Words = wordGrid.wordGrid
       Cluesfeed.reset()
       pubsub.publish(endGameSubscription, { endGameSubscription: false })
+    },
+    reshuffleWord: (_, args, ctx) => {
+      wordGrid.reshuffleCell(args.index)
+      Words = wordGrid.wordGrid
+      return Words[args.index]
     }
   },
   Subscription: {
