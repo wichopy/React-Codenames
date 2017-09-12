@@ -47,9 +47,9 @@ class CluesFeed extends Component {
     }
     return ce('div', {},
       ce('h3', {}, 'Clues Goose:'),
-      ce('div', {className: 'Clues-adder' },
+      this.props.token ? ce('div', {className: 'Clues-adder' },
         ce(ClueAdder, {})
-      ),
+      ) : '',
       ce('ul', { className: 'list-group'},
         clues.map((clue,i) => {
           if (!currentQueryPresent.clue && i === 0) {
