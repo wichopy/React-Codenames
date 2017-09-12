@@ -4,7 +4,7 @@ import { SelectWordMutation, WordCellGridQuery, ScoreboardQuery, CurrentTurnQuer
 import { ToastDanger } from 'react-toastr-basic'
 
 class SelectWord extends Component {
-  handleClick = (position) => {
+  handleCellClick = (position) => {
     this.props.mutate({
       variables: { index: position },
       refetchQueries: [ { query: WordCellGridQuery }, { query: ScoreboardQuery }, { query: CurrentTurnQuery }]
@@ -16,9 +16,15 @@ class SelectWord extends Component {
     });
   }
 
+  handleWordClick = (ev, id) => {
+    ev.stopPropagation()
+    console.log('wordClick')
+    console.log(id)
+  }
+
   render() {
     let { type, isEnabled, value, id } = this.props
-    let { handleClick } = this
+    let { handleCellClick, handleWordClick } = this
     let className = 'word-cell ' + type
     if (!isEnabled) {
       className += ' disabled'
@@ -27,8 +33,8 @@ class SelectWord extends Component {
     return ce('td', {
       className: className,
       name: id,
-      onClick: isEnabled? () => handleClick(id, value, type) : () => { return },
-    }, value);
+      onClick: isEnabled? () => handleCellClick(id) : () => { return },
+    }, ce('span', { name: id, className: 'word-cell-value', onClick: (ev) => handleWordClick(ev, id) }, value));
   }
 };
 

@@ -103,6 +103,11 @@
   height: 100px;
 }
 
+.word-cell-value:hover {
+  text-shadow: 0 0 6px #FF0000;
+  cursor: crosshair;
+}
+
 .list-group-item.Red {
   color: Red;
 }
@@ -116,6 +121,10 @@
 
 .list-group-item.Blue.old {
   color: darkblue;
+}
+
+.word-cell:hover {
+  cursor: pointer;
 }
 
 @keyframes App-logo-spin {
