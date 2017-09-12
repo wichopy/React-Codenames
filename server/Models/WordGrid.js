@@ -64,6 +64,10 @@ class wordGrid {
     
     this.wordGrid = wordGrid.sort((a,b) => a.index - b.index);
   }
+
+  reshuffleCell = (index) => {
+    this.wordGrid[index] = {...this.wordGrid[index], word: faker.random.word()}
+  }
 }
 
 export default wordGrid

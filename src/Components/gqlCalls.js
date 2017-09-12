@@ -143,3 +143,11 @@ export const EndGameQuery = gql`
     endGame
   }
 `;
+
+export const ReshuffleMutation = gql`
+  mutation reshuffleWord($index: Int!) {
+    reshuffleWord(index: $index) {
+      index
+    }
+  }
+`;
