@@ -46,6 +46,10 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
 const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscriptions });
 
 class App extends React.Component {
+  state = {
+    callbacks: {},
+  }
+
   componentDidMount() {
     console.log('App mounted.')
   }
@@ -69,13 +73,13 @@ class App extends React.Component {
 
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-8 col-xs-12' },
-                ce(WordCellGrid, {}),
+                ce(WordCellGrid, { callbacks: this.state.callbacks }),
                 ce(SkipTurnButton, {}),
                 ce(NewGameWrapper, {}),
               ),
               ce('div', { className: 'col-lg-4 col-xs-12' },
                 ce(CreateSpymaster),
-                ce(LoginAsSpymaster),
+                ce(LoginAsSpymaster, { callbacks: this.state.callbacks }),
                 ce(CluesFeed, {},)
               ),
             ),
