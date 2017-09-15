@@ -19,11 +19,11 @@ import LoginAsSpymaster from './Components/Login'
 import AuthService from './Services/AuthService'
 import NewGameWrapper from './Components/NewGameWrapper'
 
-const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
+const wsClient = new SubscriptionClient(`ws://willchou.ca/subscriptions`, {
   reconnect: true,
 });
 
-const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/graphql'})
+const networkInterface = createNetworkInterface({ uri: 'http://willchou.ca/graphql'})
 
 const authCallbacks = {};
 const addAuthListener = (key, callback) => {
