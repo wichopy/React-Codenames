@@ -12,13 +12,23 @@ const WordCellValue = (props) => {
     })
   }
   
-  const { id, value } = props
+  const { id, value, isEnabled, enableReshuffle, token } = props
+  let className = 'word-cell-value'
+  if (!isEnabled) {
+    className += ' disabled'
+  }
+
+  if (enableReshuffle) {
+    className += ' inReshuffleMode'
+  }
 
   return ce('span', 
     { name: id,
-      className: 'word-cell-value',
-      onClick: (ev) => handleWordClick(ev, id)}, 
-    value
+      className,
+      onClick: isEnabled && enableReshuffle && token ? 
+               (ev) => handleWordClick(ev, id) :
+               () => { return } 
+    }, value
   )
 }
 
