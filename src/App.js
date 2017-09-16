@@ -63,7 +63,7 @@ class App extends React.Component {
 
   componentWillReceiveProps( nextProps ) {
     const { keydown: { event } } = nextProps
-    if (event && event.code === "KeyE") {
+    if (this.state.token && event && event.code === "KeyE") {
       this.handleEnableShuffleCheckbox()
     }
   }

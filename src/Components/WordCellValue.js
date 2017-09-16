@@ -18,7 +18,7 @@ const WordCellValue = (props) => {
     className += ' disabled'
   }
 
-  if (enableReshuffle) {
+  if (enableReshuffle && token) {
     className += ' inReshuffleMode'
   }
 

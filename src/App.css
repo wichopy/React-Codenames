@@ -13,9 +13,14 @@
   font-size: large;
 }
 
+td.word-cell {
+  border-color: white;
+  border-width: 0px;
+}
+
 .word-cell.disabled {
   color: white;
-  border-color: black;
+  border-color: white;
 }
 
 .word-cell.Red {
@@ -56,8 +61,8 @@
 .word-cell.Assassin {
   background-color: black;
   color: white;
-  border-color: black;
 }
+
 .word-cell.Red:hover {
   font-weight: 200;
   background-color: lightgrey;
@@ -93,19 +98,26 @@
 .word-cell-wrapper {
   text-align: center;
   margin: auto;
+  border-color: white
 }
 
 .word-cell {
-  border-color: black;
-  border-width: 2px;
+  border-color: white;
+  border-radius: 10px;
+  /* border-width: 2px; */
   border: solid;
   width: 100px;
   height: 100px;
+  margin: 3px;
 }
 
-.word-cell-value:hover {
+.word-cell-value.inReshuffleMode:hover {
   text-shadow: 0 0 6px #FF0000;
   cursor: crosshair;
+}
+
+.word-cell-value.disabled:hover {
+  cursor: default;
 }
 
 .list-group-item.Red {
