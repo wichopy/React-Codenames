@@ -5,6 +5,7 @@ import WordGrid from '../Models/WordGrid'
 import Scoreboard from '../Models/Scoreboard'
 import TurnsManager from '../Models/TurnsManager'
 import CluesFeed from '../Models/CluesFeed'
+import gameSession from '../Models/GameSession'
 import { JWT_SECRET } from '../config'
 
 const wordGridSubscription = 'wordGridSubscription'
@@ -15,8 +16,10 @@ const currentTurnSubscription = 'currentTurnSubscription'
 const endGameSubscription = 'endGameSubscription'
 
 //TODO: Have unique game sessions and store password inside of these game sessions instead of in resolvers.
-let password
 
+const sessions = {}
+
+let password
 let turnsManager = new TurnsManager()
 let scoreBoard = new Scoreboard()
 let wordGrid = new WordGrid()
@@ -151,13 +154,19 @@ export const resolvers = {
         return token
       }
     },
-    newGame: () => {
+    newGame: (_, args, ctx) => {
       turnsManager.reset()
       scoreBoard.reset()
       wordGrid.generate()
       Words = wordGrid.wordGrid
       Cluesfeed.reset()
       pubsub.publish(endGameSubscription, { endGameSubscription: false })
+    },
+    newSession: (_, args, ctx) => {
+      let newSession = new gameSession(args.gameId)
+      console.log(newSession)
+      sessions[args.gameId] = newSession
+      console.log(sessions)
     },
     reshuffleWord: (_, args, ctx) => {
       wordGrid.reshuffleCell(args.index)

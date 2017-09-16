@@ -53,6 +53,7 @@ const typeDefs = `
     createSpymaster(password: String!): Success
     loginAsSpymaster(password: String!): String
     newGame: Boolean
+    newSession(gameId: String!): Boolean
     reshuffleWord(index: Int!): WordCell 
   }
 
