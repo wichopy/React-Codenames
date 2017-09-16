@@ -162,6 +162,8 @@ export const resolvers = {
     reshuffleWord: (_, args, ctx) => {
       wordGrid.reshuffleCell(args.index)
       Words = wordGrid.wordGrid
+      pubsub.publish(wordGridSubscription, { wordGridSubscription: Words })
+
       return Words[args.index]
     }
   },
