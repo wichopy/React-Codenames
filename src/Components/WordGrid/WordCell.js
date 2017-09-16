@@ -1,6 +1,9 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { SelectWordMutation, WordCellGridQuery, ScoreboardQuery, CurrentTurnQuery } from './gqlCalls'
+import { SelectWordMutation,
+  WordCellGridQuery,
+  ScoreboardQuery,
+  CurrentTurnQuery } from '../gqlCalls'
 import { ToastDanger } from 'react-toastr-basic'
 
 import WordCellValue from './WordCellValue'

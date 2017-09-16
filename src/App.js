@@ -12,14 +12,15 @@ import keydown from 'react-keydown';
 
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
-import WordCellGrid from './Components/WordCellGrid';
+import WordCellGrid from './Components/WordGrid/WordCellGrid';
 import CluesFeed from './Components/CluesFeed'
 import SkipTurnButton from './Components/SkipButtonWithConfirmation'
-import CreateSpymaster from './Components/Create'
-import LoginAsSpymaster from './Components/Login'
+import CreateSpymaster from './Components/Auth/Create'
+import LoginAsSpymaster from './Components/Auth/Login'
 import AuthService from './Services/AuthService'
 import NewGameWrapper from './Components/NewGameWrapper'
 import CheckboxWordReshuffle from './Components/CheckboxWordReshuffle'
+import NewGame from './Components/NewGame'
 
 const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
 // const wsClient = new SubscriptionClient(`ws://willchou.ca/subscriptions`, {
@@ -59,6 +60,16 @@ class App extends React.Component {
     callbacks: {},
     token: AuthService.getToken(),
     enableReshuffle: false,
+    gameId: ''
+  }
+
+  getGameId() {
+    let gameId = localStorage.getItem('gameId')
+    return gameId
+  }
+
+  setGameId(gameId) {
+    localStorage.setItem('gameId', gameId)
   }
 
   componentWillReceiveProps( nextProps ) {
@@ -89,7 +100,9 @@ class App extends React.Component {
           ce('div', { className: 'container' },
 
             ce(ToastrContainer, {}),
-
+            ce('div', { className: 'row'}, 
+              ce(NewGame, {})
+            ),
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-6 col-xs-8' },
                 ce(Scoreboard, {})

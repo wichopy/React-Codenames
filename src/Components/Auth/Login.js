@@ -1,8 +1,8 @@
 import { createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
 
-import { LoginAsSpymasterMutation } from './gqlCalls';
-import AuthService from '../Services/AuthService'
+import { LoginAsSpymasterMutation } from '../gqlCalls';
+import AuthService from '../../Services/AuthService'
 const Login = (props) => {
   const state = {
     password: ''

@@ -1,7 +1,7 @@
 import { createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
 
-import { ReshuffleMutation, WordCellGridQuery } from './gqlCalls'
+import { ReshuffleMutation, WordCellGridQuery } from '../gqlCalls'
 
 const WordCellValue = (props) => {
   const handleWordClick = (ev, id) => {

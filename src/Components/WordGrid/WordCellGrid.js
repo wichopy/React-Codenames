@@ -1,5 +1,6 @@
 import { Component, createElement as ce } from 'react'
-import { WordCellGridQuery, WordGridSubscription } from './gqlCalls';
+import { WordCellGridQuery,
+  WordGridSubscription } from '../gqlCalls';
 import { graphql } from 'react-apollo';
 
 import WordCellWithMutation from './WordCell'
