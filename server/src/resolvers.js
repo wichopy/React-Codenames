@@ -15,7 +15,7 @@ const scoreboardSubscription = 'scoreboardSubscription'
 const currentTurnSubscription = 'currentTurnSubscription'
 const endGameSubscription = 'endGameSubscription'
 
-//TODO: Have unique game sessions and store password inside of these game sessions instead of in resolvers.
+//TODO: Handle game sessions in a more efficient way instead of a giant object, this will lead to difficulties at large scale.
 
 const sessions = {}
 
