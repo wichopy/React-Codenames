@@ -2,7 +2,7 @@ import { Component, createElement as ce} from 'react';
 import { CluesfeedQuery,
   CurrentClueQuery,
   CluePresentSubscription,
-  CluesFeedSubscription } from './gqlCalls';
+  CluesFeedSubscription } from '../gqlCalls';
 import { graphql, compose } from 'react-apollo';
 
 import ClueAdder from './CluesAdder';

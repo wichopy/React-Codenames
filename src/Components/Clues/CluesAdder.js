@@ -1,6 +1,6 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { CluesfeedQuery, AddClueMutation, CurrentClueQuery } from './gqlCalls'
+import { CluesfeedQuery, AddClueMutation, CurrentClueQuery } from '../gqlCalls'
 import { ToastDanger } from 'react-toastr-basic'
 
 const defaultState = {

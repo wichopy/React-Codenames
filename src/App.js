@@ -13,7 +13,7 @@ import keydown from 'react-keydown';
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
 import WordCellGrid from './Components/WordGrid/WordCellGrid';
-import CluesFeed from './Components/CluesFeed'
+import CluesFeed from './Components/Clues/CluesFeed'
 import SkipTurnButton from './Components/SkipButtonWithConfirmation'
 import CreateSpymaster from './Components/Auth/Create'
 import LoginAsSpymaster from './Components/Auth/Login'
