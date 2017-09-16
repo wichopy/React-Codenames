@@ -139,6 +139,10 @@ td.word-cell {
   cursor: pointer;
 }
 
+.word-cell.inReshuffleMode:hover {
+  cursor: default;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
