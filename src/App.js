@@ -9,6 +9,7 @@ import './App.css';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { addGraphQLSubscriptions } from 'add-graphql-subscriptions'
 import keydown from 'react-keydown';
+import { observer } from 'mobx-react'
 
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
@@ -55,6 +56,8 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
 
 const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscriptions });
 
+@observer
+@keydown
 class App extends React.Component {
   state = {
     callbacks: {},
@@ -132,4 +135,4 @@ class App extends React.Component {
   }
 }
 
-export default keydown(App);
+export default App;

@@ -1,6 +1,5 @@
 import { createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-
 import { SetSpymasterMutation } from '../gqlCalls';
 
 const Create = (props) => {
