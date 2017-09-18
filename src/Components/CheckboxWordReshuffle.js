@@ -1,19 +1,25 @@
 import { Component, createElement as ce } from 'react'; 
+import { observer } from 'mobx-react';
 
+@observer
 class CheckboxWordReshuffle extends Component {
 
   render() {
-    const { enableReshuffle, handleEnableShuffleCheckbox } = this.props;
-    return ce('form', {},
-      ce('label', {}, 
-        ce('input', { 
-          type: 'checkbox',
-          checked: enableReshuffle,
-          onChange: handleEnableShuffleCheckbox,
-        }),
-        'Enable Word Reshuffle (or press \'e\' to enable',
+    const { authStore, modifierStore } = this.props;
+
+    if (authStore.token) {
+      return ce('form', {},
+        ce('label', {}, 
+          ce('input', { 
+            type: 'checkbox',
+            checked: modifierStore.enableReshuffle,
+            onChange: modifierStore.handleEnableReshuffle,
+          }),
+          'Enable Word Reshuffle (or press \'e\' to enable',
+        )
       )
-    )
+    }
+    return ce('div', {})
   }
 }
 

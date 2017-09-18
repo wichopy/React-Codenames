@@ -1,11 +1,14 @@
 import { Component, createElement as ce} from 'react';
+import { graphql, compose } from 'react-apollo';
+import { observer } from 'mobx-react'
+
 import { CluesfeedQuery,
   CurrentClueQuery,
   CluePresentSubscription,
   CluesFeedSubscription } from '../gqlCalls';
-import { graphql, compose } from 'react-apollo';
-
 import ClueAdder from './CluesAdder';
+
+@observer
 class CluesFeed extends Component {
 
   componentWillMount() {
@@ -34,7 +37,7 @@ class CluesFeed extends Component {
   }
 
   render() {
-    const { Cluesfeed, currentQueryPresent } = this.props
+    const { Cluesfeed, currentQueryPresent, authStore } = this.props
     if (Cluesfeed.loading || currentQueryPresent.loading) {
       return ce('p', {}, 'Loading...')
     }
@@ -47,7 +50,7 @@ class CluesFeed extends Component {
     }
     return ce('div', {},
       ce('h3', {}, 'Clues Goose:'),
-      this.props.token ? ce('div', {className: 'Clues-adder' },
+      authStore.token ? ce('div', {className: 'Clues-adder' },
         ce(ClueAdder, {})
       ) : '',
       ce('ul', { className: 'list-group'},
