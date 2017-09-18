@@ -18,10 +18,17 @@ import CluesFeed from './Components/Clues/CluesFeed'
 import SkipTurnButton from './Components/SkipButtonWithConfirmation'
 import CreateSpymaster from './Components/Auth/Create'
 import LoginAsSpymaster from './Components/Auth/Login'
-import AuthService from './Services/AuthService'
 import NewGameWrapper from './Components/NewGameWrapper'
 import CheckboxWordReshuffle from './Components/CheckboxWordReshuffle'
+import ViewingAs from './Components/ViewingAs'
 import NewGame from './Components/NewGame'
+
+import ModifierStore from './Stores/ModifierStore'
+import AuthStore from './Stores/AuthStore'
+
+let authStore = new AuthStore();
+authStore.getToken();
+let modifierStore = new ModifierStore();
 
 const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
 // const wsClient = new SubscriptionClient(`ws://willchou.ca/subscriptions`, {
@@ -31,18 +38,14 @@ const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
 const networkInterface = createNetworkInterface({ uri: 'http://localhost:4000/graphql'})
 // const networkInterface = createNetworkInterface({ uri: 'http://willchou.ca/graphql'})
 
-const authCallbacks = {};
-const addAuthListener = (key, callback) => {
-  authCallbacks[key] = callback
-}
+
 networkInterface.use([{
   applyMiddleware(req,next) {
-    let token = AuthService.getToken()
+    let token = authStore.getToken()
     if (!req.options.headers) {
       req.options.headers = {}
     }
     if (token) {
-      Object.keys(authCallbacks).forEach(key => authCallbacks[key]() )
       req.options.headers.authorization = `Bearer ${token}`
     }
     next()
@@ -56,14 +59,10 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
 
 const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscriptions });
 
-@observer
 @keydown
 class App extends React.Component {
   state = {
-    callbacks: {},
-    token: AuthService.getToken(),
-    enableReshuffle: false,
-    gameId: ''
+    gameId: '',
   }
 
   getGameId() {
@@ -77,26 +76,16 @@ class App extends React.Component {
 
   componentWillReceiveProps( nextProps ) {
     const { keydown: { event } } = nextProps
-    if (this.state.token && event && event.code === "KeyE") {
-      this.handleEnableShuffleCheckbox()
+    if (authStore.token && event && event.code === "KeyE") {
+      modifierStore.handleEnableReshuffle()
     }
   }
+
   componentDidMount() {
     console.log('App mounted.')
-    addAuthListener('authenticated', this.listenForAuth)
-  }
-
-  listenForAuth = () => {
-    this.setState({ token: AuthService.getToken() })
-  }
-
-  handleEnableShuffleCheckbox = () => {
-    this.setState({ enableReshuffle: ! this.state.enableReshuffle })
   }
 
   render() {
-    const { token, enableReshuffle, callbacks } = this.state
-    const { handleEnableShuffleCheckbox } = this
     return (
       ce(ApolloProvider, { client },
         ce('div', { className: 'App' },
@@ -104,6 +93,7 @@ class App extends React.Component {
 
             ce(ToastrContainer, {}),
             ce('div', { className: 'row'}, 
+              ce(ViewingAs, { authStore }),
               ce(NewGame, {})
             ),
             ce('div', { className: 'row'},
@@ -117,15 +107,15 @@ class App extends React.Component {
 
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-8 col-xs-12' },
-                ce(WordCellGrid, { callbacks, enableReshuffle, token }),
+                ce(WordCellGrid, { authStore, modifierStore }),
                 ce(SkipTurnButton, {}),
                 ce(NewGameWrapper, {}),
               ),
               ce('div', { className: 'col-lg-4 col-xs-12' },
-                token ? '' : ce(CreateSpymaster),
-                token ? '' : ce(LoginAsSpymaster, { callbacks: this.state.callbacks }),
-                token ? ce(CheckboxWordReshuffle, { enableReshuffle, handleEnableShuffleCheckbox }) : '',
-                ce(CluesFeed, { token },)
+                ce(CreateSpymaster, { authStore }),
+                ce(LoginAsSpymaster, { authStore }),
+                ce(CheckboxWordReshuffle, { authStore, modifierStore }),
+                ce(CluesFeed, { authStore },)
               ),
             ),
           ),

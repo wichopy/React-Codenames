@@ -1,10 +1,14 @@
 import { Component, createElement as ce } from 'react'
-import { WordCellGridQuery,
-  WordGridSubscription } from '../gqlCalls';
 import { graphql } from 'react-apollo';
+import { observer } from 'mobx-react'
 
+import {
+  WordCellGridQuery,
+  WordGridSubscription } from '../gqlCalls'
 import WordCellWithMutation from './WordCell'
+import GQLStore from '../../Stores/GQLStore'
 
+@observer
 class WordCellGrid extends Component {
   size = 5;
   numberOfRows = Array(this.size).fill('');
@@ -39,7 +43,7 @@ class WordCellGrid extends Component {
   }
   
   componentDidMount() {
-    this.props.callbacks['WordCellGridRefetch'] = this.refetch
+    GQLStore.callbacks['WordCellGridRefetch'] = this.refetch
     console.log("Word Cell Grid Mounted")
   }
 
@@ -51,7 +55,7 @@ class WordCellGrid extends Component {
   render() {
     const { loading, error, wordCells } = this.props.WordCellGridQuery
     const { numberOfRows } = this
-    const { enableReshuffle, token } = this.props
+    const { authStore, modifierStore } = this.props
     if (loading) {
       return ce('p', {}, 'Loading...')
     }
@@ -65,14 +69,14 @@ class WordCellGrid extends Component {
             ce('tr', { key: i },
               wordCells.slice(i*5, i*5+5).map((cell, index) => {
                 return ce(WordCellWithMutation,
-                  {key: cell.index,
+                  { key: cell.index,
                   id: i*5+index,
                   value: cell.word,
                   type: cell.type,
                   isEnabled: cell.isEnabled,
-                  enableReshuffle,
-                  token,
-                })
+                  modifierStore,
+                  authStore },
+                )
               })
             )
           )
