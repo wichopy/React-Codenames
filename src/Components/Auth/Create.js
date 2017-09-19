@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo';
 import { observer } from 'mobx-react'
 
 import { SetSpymasterMutation } from '../gqlCalls';
+
 @observer
 class Create extends Component {
   state = {

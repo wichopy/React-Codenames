@@ -25,10 +25,13 @@ import NewGame from './Components/NewGame'
 
 import ModifierStore from './Stores/ModifierStore'
 import AuthStore from './Stores/AuthStore'
+import SessionStore from './Stores/SessionStore'
 
-let authStore = new AuthStore();
+const authStore = new AuthStore();
 authStore.getToken();
-let modifierStore = new ModifierStore();
+const modifierStore = new ModifierStore();
+const sessionStore = new SessionStore();
+sessionStore.getGameId()
 
 const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
 // const wsClient = new SubscriptionClient(`ws://willchou.ca/subscriptions`, {
@@ -61,18 +64,6 @@ const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscrip
 
 @keydown
 class App extends React.Component {
-  state = {
-    gameId: '',
-  }
-
-  getGameId() {
-    let gameId = localStorage.getItem('gameId')
-    return gameId
-  }
-
-  setGameId(gameId) {
-    localStorage.setItem('gameId', gameId)
-  }
 
   componentWillReceiveProps( nextProps ) {
     const { keydown: { event } } = nextProps
@@ -94,7 +85,9 @@ class App extends React.Component {
             ce(ToastrContainer, {}),
             ce('div', { className: 'row'}, 
               ce(ViewingAs, { authStore }),
-              ce(NewGame, {})
+              ce('h2', {}, ' --- '),
+              ce('h2', {}, 'game ID: ' + sessionStore.gameId),
+              ce(NewGame, { sessionStore })
             ),
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-6 col-xs-8' },
@@ -115,7 +108,7 @@ class App extends React.Component {
                 ce(CreateSpymaster, { authStore }),
                 ce(LoginAsSpymaster, { authStore }),
                 ce(CheckboxWordReshuffle, { authStore, modifierStore }),
-                ce(CluesFeed, { authStore },)
+                ce(CluesFeed, { authStore })
               ),
             ),
           ),

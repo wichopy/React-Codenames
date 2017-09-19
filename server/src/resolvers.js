@@ -167,6 +167,10 @@ export const resolvers = {
       console.log(newSession)
       sessions[args.gameId] = newSession
       console.log(sessions)
+      return args.gameId
+    },
+    joinSession: (_, args, ctx) => {
+
     },
     reshuffleWord: (_, args, ctx) => {
       wordGrid.reshuffleCell(args.index)

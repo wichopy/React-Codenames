@@ -1,7 +1,7 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-
 import { observer } from 'mobx-react'
+
 import { LoginAsSpymasterMutation } from '../gqlCalls';
 import GQLStore from '../../Stores/GQLStore'
 

@@ -151,3 +151,9 @@ export const ReshuffleMutation = gql`
     }
   }
 `;
+
+export const NewSessionMutation = gql`
+  mutation newSessionMutation($gameId: String!) {
+    newSession(gameId: $gameId)
+  }
+`
