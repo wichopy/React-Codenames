@@ -1,4 +1,4 @@
-import React from 'react';
+import { createElement as ce } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider as MobxProvider } from 'mobx-react'
 
@@ -56,13 +56,12 @@ const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscrip
 
 // Wrap the app with stores and apollo's network client.
 ReactDOM.render(
-  <MobxProvider 
-    authStore={authStore}
-    modifierStore={modifierStore}
-    sessionStore={sessionStore} >
-    <ApolloProvider client={client} >
-      <App />
-    </ApolloProvider>
-  </MobxProvider>,
-  document.getElementById('root'));
+  ce(MobxProvider , 
+    { authStore,
+      modifierStore,
+      sessionStore 
+    }, ce(ApolloProvider, { client },
+      ce(App, {})
+    ),
+  ), document.getElementById('root'));
 registerServiceWorker();
