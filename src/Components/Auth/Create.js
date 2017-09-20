@@ -1,9 +1,10 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
 import { SetSpymasterMutation } from '../gqlCalls';
 
+@inject('authStore')
 @observer
 class Create extends Component {
   state = {

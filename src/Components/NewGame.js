@@ -1,9 +1,10 @@
 import { Component, createElement as ce } from 'react'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 import { graphql } from 'react-apollo'
 
 import { NewSessionMutation } from './gqlCalls'
 
+@inject('sessionStore')
 @observer
 class NewGame extends Component {
   state = {

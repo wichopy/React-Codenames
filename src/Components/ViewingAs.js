@@ -1,6 +1,7 @@
 import { Component, createElement as ce } from 'react'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
+@inject('authStore')
 @observer
 class ViewingAs extends Component {
   render() {

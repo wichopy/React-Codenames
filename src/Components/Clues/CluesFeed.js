@@ -1,6 +1,6 @@
 import { Component, createElement as ce} from 'react';
 import { graphql, compose } from 'react-apollo';
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
 import { CluesfeedQuery,
   CurrentClueQuery,
@@ -8,6 +8,7 @@ import { CluesfeedQuery,
   CluesFeedSubscription } from '../gqlCalls';
 import ClueAdder from './CluesAdder';
 
+@inject('authStore')
 @observer
 class CluesFeed extends Component {
 

@@ -1,6 +1,6 @@
 import { Component, createElement as ce } from 'react'
 import { graphql } from 'react-apollo';
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
 import {
   WordCellGridQuery,
@@ -8,6 +8,7 @@ import {
 import WordCellWithMutation from './WordCell'
 import GQLStore from '../../Stores/GQLStore'
 
+@inject('authStore', 'modifierStore')
 @observer
 class WordCellGrid extends Component {
   size = 5;
@@ -55,7 +56,6 @@ class WordCellGrid extends Component {
   render() {
     const { loading, error, wordCells } = this.props.WordCellGridQuery
     const { numberOfRows } = this
-    const { authStore, modifierStore } = this.props
     if (loading) {
       return ce('p', {}, 'Loading...')
     }
@@ -73,9 +73,7 @@ class WordCellGrid extends Component {
                   id: i*5+index,
                   value: cell.word,
                   type: cell.type,
-                  isEnabled: cell.isEnabled,
-                  modifierStore,
-                  authStore },
+                  isEnabled: cell.isEnabled },
                 )
               })
             )

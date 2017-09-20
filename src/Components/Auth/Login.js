@@ -1,10 +1,11 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
 import { LoginAsSpymasterMutation } from '../gqlCalls';
 import GQLStore from '../../Stores/GQLStore'
 
+@inject('authStore')
 @observer
 class Login extends Component {
   state = {

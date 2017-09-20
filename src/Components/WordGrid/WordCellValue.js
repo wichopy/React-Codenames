@@ -1,8 +1,9 @@
 import { Component, createElement as ce } from 'react';
 import { graphql } from 'react-apollo';
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 import { ReshuffleMutation, WordCellGridQuery } from '../gqlCalls'
 
+@inject('authStore', 'modifierStore')
 @observer
 class WordCellValue extends Component {
   handleWordClick = (ev, id) => {
@@ -12,6 +13,7 @@ class WordCellValue extends Component {
       refetchQueries: [ { query: WordCellGridQuery }]
     }).then(() => this.props.authStore.getToken())
   }
+
   render() {
     const { id, value, isEnabled, modifierStore, authStore } = this.props
     let className = 'word-cell-value'

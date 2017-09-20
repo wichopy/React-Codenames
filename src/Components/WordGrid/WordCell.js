@@ -5,10 +5,11 @@ import { SelectWordMutation,
   ScoreboardQuery,
   CurrentTurnQuery } from '../gqlCalls'
 import { ToastDanger } from 'react-toastr-basic'
-import { observer } from 'mobx-react'
+import { observer, inject } from 'mobx-react'
 
 import WordCellValue from './WordCellValue'
 
+@inject('authStore', 'modifierStore')
 @observer
 class WordCell extends Component {
   handleCellClick = (position) => {
@@ -42,7 +43,7 @@ class WordCell extends Component {
       onClick: isEnabled && !modifierStore.enableReshuffle ? 
                () => handleCellClick(id) : 
                () => { return },
-      }, ce(WordCellValue, { id, value, isEnabled, modifierStore, authStore }),
+      }, ce(WordCellValue, { id, value, isEnabled }),
     );
   }
 };
