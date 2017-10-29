@@ -16,7 +16,18 @@ import { schema } from './src/schema';
 const PORT = 4000;
 
 const server = express();
-server.use('*', cors({ origin: 'http://www.willchou.ca/codenames' }));
+
+const whitelist = ['http://www.willchou.ca/codenames', 'http://localhost:3000']
+
+server.use('*', cors({ uri: whitelist[0] })
+//  cors({ origin: (origin, callback) => {
+//    if (whitelist.indexOf(origin) !== -1) {
+//      callback(null,true)
+//    } else {
+//      callback(new Error('Not allowed by CORS'))
+//    }
+//  }})
+);
 
 const ws = createServer(server);
 
