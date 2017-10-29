@@ -8,6 +8,7 @@ import {
 import './App.css';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { addGraphQLSubscriptions } from 'add-graphql-subscriptions'
+import keydown from 'react-keydown';
 
 import Scoreboard from './Models/Scoreboard';
 import TurnsManager from './Models/turnsManager';
@@ -18,6 +19,7 @@ import CreateSpymaster from './Components/Create'
 import LoginAsSpymaster from './Components/Login'
 import AuthService from './Services/AuthService'
 import NewGameWrapper from './Components/NewGameWrapper'
+import CheckboxWordReshuffle from './Components/CheckboxWordReshuffle'
 
 const wsClient = new SubscriptionClient(`ws://willchou.ca/subscriptions`, {
   reconnect: true,
@@ -53,9 +55,16 @@ const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscrip
 class App extends React.Component {
   state = {
     callbacks: {},
-    token: AuthService.getToken()
+    token: AuthService.getToken(),
+    enableReshuffle: false,
   }
 
+  componentWillReceiveProps( nextProps ) {
+    const { keydown: { event } } = nextProps
+    if (this.state.token && event && event.code === "KeyE") {
+      this.handleEnableShuffleCheckbox()
+    }
+  }
   componentDidMount() {
     console.log('App mounted.')
     addAuthListener('authenticated', this.listenForAuth)
@@ -65,8 +74,13 @@ class App extends React.Component {
     this.setState({ token: AuthService.getToken() })
   }
 
+  handleEnableShuffleCheckbox = () => {
+    this.setState({ enableReshuffle: ! this.state.enableReshuffle })
+  }
+
   render() {
-    let { token } = this.state
+    const { token, enableReshuffle, callbacks } = this.state
+    const { handleEnableShuffleCheckbox } = this
     return (
       ce(ApolloProvider, { client },
         ce('div', { className: 'App' },
@@ -85,13 +99,14 @@ class App extends React.Component {
 
             ce('div', { className: 'row'},
               ce('div', { className: 'col-lg-8 col-xs-12' },
-                ce(WordCellGrid, { callbacks: this.state.callbacks }),
+                ce(WordCellGrid, { callbacks, enableReshuffle, token }),
                 ce(SkipTurnButton, {}),
                 ce(NewGameWrapper, {}),
               ),
               ce('div', { className: 'col-lg-4 col-xs-12' },
                 token ? '' : ce(CreateSpymaster),
                 token ? '' : ce(LoginAsSpymaster, { callbacks: this.state.callbacks }),
+                token ? ce(CheckboxWordReshuffle, { enableReshuffle, handleEnableShuffleCheckbox }) : '',
                 ce(CluesFeed, { token },)
               ),
             ),
@@ -102,4 +117,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default keydown(App);

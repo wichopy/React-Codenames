@@ -18,10 +18,16 @@ class WordCellGrid extends Component {
         }
         let newWordGrid = [...previousState.wordCells]
         let newData =  subscriptionData.data.wordGridSubscription
+        //TODO: Instead of receiving the whole word grid and processing it on client, there should be a specific subscription for word reshuffles and word selections.
         for (let i = 0; i < 25; i++) {
+          // If new word was selected, update grid with only the new cell.
           if (newData[i].isEnabled !== previousState.wordCells[i].isEnabled) {
             newWordGrid[i] = newData[i]
             break
+          }
+          // If a word was reshuffled, only update the cell with the updated word.
+          if (newData[i].word !== previousState.wordCells[i].word) {
+            newWordGrid[i] = {...previousState.wordCells[i], word: newData[i].word } 
           }
         }
         return {
@@ -44,6 +50,7 @@ class WordCellGrid extends Component {
   render() {
     const { loading, error, wordCells } = this.props.WordCellGridQuery
     const { numberOfRows } = this
+    const { enableReshuffle, token } = this.props
     if (loading) {
       return ce('p', {}, 'Loading...')
     }
@@ -56,7 +63,15 @@ class WordCellGrid extends Component {
           return (
             ce('tr', { key: i },
               wordCells.slice(i*5, i*5+5).map((cell, index) => {
-                return ce(WordCellWithMutation, {key: cell.index, id: i*5+index, value: cell.word, type: cell.type, isEnabled: cell.isEnabled})
+                return ce(WordCellWithMutation,
+                  {key: cell.index,
+                  id: i*5+index,
+                  value: cell.word,
+                  type: cell.type,
+                  isEnabled: cell.isEnabled,
+                  enableReshuffle,
+                  token,
+                })
               })
             )
           )

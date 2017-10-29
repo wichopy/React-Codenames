@@ -43,6 +43,7 @@
     "react-dev-utils": "^3.0.2",
     "react-dom": "^15.6.1",
     "react-error-overlay": "^1.0.9",
+    "react-keydown": "^1.9.4",
     "react-toastr-basic": "^1.1.14",
     "style-loader": "0.18.2",
     "subscriptions-transport-ws": "^0.8.2",
@@ -98,5 +99,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
- "homepage" : "http://www.willchou.ca/codenames"
+  "homepage": "http://www.willchou.ca/codenames",
+  "devDependencies": {}
 }
