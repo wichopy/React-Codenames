@@ -4,6 +4,7 @@ install:
   - npm install -g nodemon
   - npm install -g babel-cli
   - npm install
-  - npm start & cd server; npm start & node_modules/.bin/wait-on "http://localhost:3000/"
+  - ls
+  - npm start & cd server; npm start & ./node_modules/.bin/wait-on "http://localhost:3000/"
 script:
-  - node_modules/.bin/cypress run
+  - ./node_modules/.bin/cypress run
