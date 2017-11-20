@@ -23,11 +23,12 @@ const Create = (props) => {
   return ce('span', { className: 'form-group card' },
     ce('h3', {}, 'Set Spymaster Password'),
     ce('input', { name: 'password',
+      id: 'create-password',
       type: 'password',
       className: 'form-control',
       placeholder: 'Password',
       onKeyUp: ev => handleKeyUp(ev) }),
-    ce('button', { className: 'btn btn-primary', onClick: createSpymaster }, 'Create Spymaster'),
+    ce('button', { className: 'btn btn-primary', id: 'create-password-button', onClick: createSpymaster }, 'Create Spymaster'),
   )
 }
 

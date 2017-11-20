@@ -99,5 +99,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "cypress": "^1.0.3"
+  }
 }

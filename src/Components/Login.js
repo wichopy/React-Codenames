@@ -30,11 +30,12 @@ const Login = (props) => {
   return ce('span', { className: 'form-group card' },
     ce('h3', {}, 'Access spymaster view'),
     ce('input', { name: 'password',
+      id: 'spymaster-login',
       type: 'password',
       className: 'form-control',
       placeholder: 'Password',
       onKeyUp: ev => handleKeyUp(ev) }),
-    ce('button', { className: 'btn btn-primary', onClick: handleLogin }, 'View as Spymaster'),
+    ce('button', { className: 'btn btn-primary', id: 'spymaster-password-button', onClick: handleLogin }, 'View as Spymaster'),
   )
 }
 
