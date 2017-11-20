@@ -1,0 +1,7 @@
+language: node_js
+  - 7.10.1
+install:
+  - npm install
+  - npm start& cd server; npm start
+script:
+  - node_modules/.bin/cypress run
