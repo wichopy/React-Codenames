@@ -12,6 +12,7 @@ import jwt from 'express-jwt'
 import { JWT_SECRET } from './config'
 
 import { schema } from './src/schema';
+import { required } from 'glamor';
 
 const PORT = 4000;
 
@@ -46,11 +47,15 @@ server.use('/graphql', bodyParser.json(),
     credentialsRequired: false,
   }),
 // Define the context for this request to render user specific data.
-  graphqlExpress(req => ({
-  schema,
-  context: {
-    spymaster: req.user ? true : false }
-  }))
+  graphqlExpress(req => {
+    return ({
+      schema,
+      context: {
+        gameName: req.headers.gamename,
+        spymaster: req.user ? true : false
+      }
+    })
+  })
 );
 
 server.use('/graphiql', graphiqlExpress({

@@ -42,6 +42,7 @@ networkInterface.use([{
     if (token) {
       Object.keys(authCallbacks).forEach(key => authCallbacks[key]() )
       req.options.headers.authorization = `Bearer ${token}`
+      req.options.headers.gameName = "hello"
     }
     next()
   },
