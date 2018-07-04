@@ -38,6 +38,11 @@ server.get('/', function (req, res) {
   res.send('Codenames Server!');
 });
 
+server.use(function (req, res, next) {
+  console.log(req.headers.gamename)
+  next()
+})
+
 // Using this tutorial on Medium by Simon Tucker
 // https://medium.com/react-native-training/building-chatty-part-7-authentication-in-graphql-cd37770e5ab3
 server.use('/graphql', bodyParser.json(),

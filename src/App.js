@@ -20,6 +20,7 @@ import LoginAsSpymaster from './Components/Login'
 import AuthService from './Services/AuthService'
 import NewGameWrapper from './Components/NewGameWrapper'
 import CheckboxWordReshuffle from './Components/CheckboxWordReshuffle'
+import MainMenu from './Components/MainMenu'
 
 const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
 // const wsClient = new SubscriptionClient(`ws://willchou.ca/subscriptions`, {
@@ -42,8 +43,8 @@ networkInterface.use([{
     if (token) {
       Object.keys(authCallbacks).forEach(key => authCallbacks[key]() )
       req.options.headers.authorization = `Bearer ${token}`
-      req.options.headers.gameName = "hello"
     }
+    req.options.headers.gameName = "hello"
     next()
   },
 }]);
@@ -69,7 +70,6 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
-    console.log('App mounted.')
     addAuthListener('authenticated', this.listenForAuth)
   }
 
@@ -82,6 +82,11 @@ class App extends React.Component {
   }
 
   render() {
+    const searchParams = new URLSearchParams(window.location.search)
+    if (searchParams.get('gameRoom') === null) {
+      return <MainMenu />
+    }
+
     const { token, enableReshuffle, callbacks } = this.state
     const { handleEnableShuffleCheckbox } = this
     return (
