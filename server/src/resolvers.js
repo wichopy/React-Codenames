@@ -6,6 +6,7 @@ import Scoreboard from '../Models/Scoreboard'
 import TurnsManager from '../Models/TurnsManager'
 import CluesFeed from '../Models/CluesFeed'
 import { JWT_SECRET } from '../config'
+import { GameSession } from './connectors'
 
 const wordGridSubscription = 'wordGridSubscription'
 const cluesFeedSubscription = 'cluesFeedSubscription'
@@ -137,6 +138,11 @@ export const resolvers = {
       turnsManager.switchTurn()
       pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
       pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
+    },
+    createGameSession: (_, args, ctx) => {
+      GameSession.createNewGame(args.gameName, args.password)
+      // TODO: Handle errors, eg no duplicates, network errors.
+      return 'Successfully created game session: ' + args.gameName
     },
     createSpymaster: (_, args, ctx) => {
       password = args.password

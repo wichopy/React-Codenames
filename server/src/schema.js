@@ -50,6 +50,7 @@ const typeDefs = `
     selectWord(index: Int!): WordCell
     addClue(hint: String!, associated: Int!): AddClueMessage
     skipTurn: Boolean
+    createGameSession(password: String, gameName: String!): String
     createSpymaster(password: String!): Success
     loginAsSpymaster(password: String!): String
     newGame: Boolean
