@@ -69,6 +69,9 @@ const GameView =
       if (loading) {
         return <h1>Loading</h1>
       }
+      if (error) {
+        return <h1>Something is wrong</h1>
+      }
       if (!session.gameExists) {
         return gameInvalid
       }

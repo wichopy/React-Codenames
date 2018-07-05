@@ -71,7 +71,7 @@ const pubsub = new PubSub()
 
 export const resolvers = {
   Query: {
-    session: (_, args, context) => {
+    session: (root, args, context) => {
       const { gameName } = context
       console.log(GameSession)
       if (!GameSession.getSession([gameName])) {
