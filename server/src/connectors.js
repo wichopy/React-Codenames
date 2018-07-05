@@ -7,7 +7,7 @@ import CluesFeed from '../Models/CluesFeed'
 // Support in memory game sessions.
 // TODO: Persist game session data.
 
-const gameSessions = {}
+const gameSessions = { hello: {}}
 
 // TODO: Return promises so transition to persisted data is seamless.
 const GameSession = {

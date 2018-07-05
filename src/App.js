@@ -22,6 +22,9 @@ import NewGameWrapper from './Components/NewGameWrapper'
 import CheckboxWordReshuffle from './Components/CheckboxWordReshuffle'
 import MainMenu from './Components/MainMenu'
 
+import { graphql } from 'react-apollo';
+import { SessionQuery } from './Components/gqlCalls';
+
 const wsClient = new SubscriptionClient(`ws://localhost:4000/subscriptions`, {
 // const wsClient = new SubscriptionClient(`ws://willchou.ca/subscriptions`, {
   reconnect: true,
@@ -34,6 +37,9 @@ const authCallbacks = {};
 const addAuthListener = (key, callback) => {
   authCallbacks[key] = callback
 }
+
+const searchParams = new URLSearchParams(window.location.search)
+
 networkInterface.use([{
   applyMiddleware(req,next) {
     let token = AuthService.getToken()
@@ -44,7 +50,7 @@ networkInterface.use([{
       Object.keys(authCallbacks).forEach(key => authCallbacks[key]() )
       req.options.headers.authorization = `Bearer ${token}`
     }
-    req.options.headers.gameName = "hello"
+    req.options.headers.gameName = searchParams.get('gameRoom')
     next()
   },
 }]);
@@ -55,6 +61,24 @@ const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
 );
 
 const client = new ApolloClient({ networkInterface: networkInterfaceWithSubscriptions });
+
+
+const GameView =
+    ({ SessionQuery, gameValid, gameInvalid }) => {
+      const { loading, error, session } = SessionQuery
+      if (loading) {
+        return <h1>Loading</h1>
+      }
+      if (!session.gameExists) {
+        return gameInvalid
+      }
+      if (session.gameExists) {
+        return gameValid
+      }
+  }
+
+const GameViewWithSessionQuery = graphql(SessionQuery, {
+  name: 'SessionQuery'})(GameView)
 
 class App extends React.Component {
   state = {
@@ -81,44 +105,51 @@ class App extends React.Component {
     this.setState({ enableReshuffle: ! this.state.enableReshuffle })
   }
 
+
   render() {
     const searchParams = new URLSearchParams(window.location.search)
-    if (searchParams.get('gameRoom') === null) {
-      return <MainMenu />
-    }
+    const gameRoom = searchParams.get('gameRoom')
 
     const { token, enableReshuffle, callbacks } = this.state
     const { handleEnableShuffleCheckbox } = this
     return (
       ce(ApolloProvider, { client },
         ce('div', { className: 'App' },
-          ce('div', { className: 'container' },
 
-            ce(ToastrContainer, {}),
-
-            ce('div', { className: 'row'},
-              ce('div', { className: 'col-lg-6 col-xs-8' },
-                ce(Scoreboard, {})
-              ),
-              ce('div', { className: 'col-lg-6 col-xs-4' },
-                ce(TurnsManager, {}),
-              )
+          ce(GameViewWithSessionQuery, {
+            gameInvalid: ce(
+              'div', {},
+              gameRoom !== null ? ce('h3', {}, 'The game ' + gameRoom + ' doesnt exist! Try making a new game session here') : null,
+              ce(MainMenu, {},),
             ),
 
-            ce('div', { className: 'row'},
-              ce('div', { className: 'col-lg-8 col-xs-12' },
-                ce(WordCellGrid, { callbacks, enableReshuffle, token }),
-                ce(SkipTurnButton, {}),
-                ce(NewGameWrapper, {}),
+            gameValid: ce('div', { className: 'container' },
+              ce(ToastrContainer, {}),
+
+              ce('div', { className: 'row'},
+                ce('div', { className: 'col-lg-6 col-xs-8' },
+                  ce(Scoreboard, {})
+                ),
+                ce('div', { className: 'col-lg-6 col-xs-4' },
+                  ce(TurnsManager, {}),
+                )
               ),
-              ce('div', { className: 'col-lg-4 col-xs-12' },
-                token ? '' : ce(CreateSpymaster),
-                token ? '' : ce(LoginAsSpymaster, { callbacks: this.state.callbacks }),
-                token ? ce(CheckboxWordReshuffle, { enableReshuffle, handleEnableShuffleCheckbox }) : '',
-                ce(CluesFeed, { token },)
+
+              ce('div', { className: 'row'},
+                ce('div', { className: 'col-lg-8 col-xs-12' },
+                  ce(WordCellGrid, { callbacks, enableReshuffle, token }),
+                  ce(SkipTurnButton, {}),
+                  ce(NewGameWrapper, {}),
+                ),
+                ce('div', { className: 'col-lg-4 col-xs-12' },
+                  token ? '' : ce(CreateSpymaster),
+                  token ? '' : ce(LoginAsSpymaster, { callbacks: this.state.callbacks }),
+                  token ? ce(CheckboxWordReshuffle, { enableReshuffle, handleEnableShuffleCheckbox }) : '',
+                  ce(CluesFeed, { token },)
+                ),
               ),
             ),
-          ),
+          },),
         ),
       )
     );

@@ -1,13 +1,20 @@
 import { gql } from 'react-apollo';
 
 export const SelectWordMutation = gql`
-mutation selectWord($index: Int!) {
-  selectWord(index: $index) {
-    index
+  mutation selectWord($index: Int!) {
+    selectWord(index: $index) {
+      index
+    }
   }
-}
 `;
 
+export const SessionQuery = gql`
+  query getGameSessionQuery {
+    session {
+      gameExists
+    }
+  }
+`;
 export const WordCellGridQuery = gql`
 query allWordsQuery {
   wordCells {
@@ -90,7 +97,7 @@ export const CluesFeedSubscription = gql`
 
 export const CluePresentSubscription = gql`
   subscription {
-    cluePresentSubscription 
+    cluePresentSubscription
   }
 `;
 

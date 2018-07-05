@@ -28,7 +28,12 @@ const typeDefs = `
     team: String!
   }
 
+  type Session {
+    gameExists: Boolean
+  }
+
   type Query {
+    session: Session
     wordCells: [WordCell]
     score: Scoreboard
     turn: CurrentTurn
@@ -54,7 +59,7 @@ const typeDefs = `
     createSpymaster(password: String!): Success
     loginAsSpymaster(password: String!): String
     newGame: Boolean
-    reshuffleWord(index: Int!): WordCell 
+    reshuffleWord(index: Int!): WordCell
   }
 
   type Subscription {

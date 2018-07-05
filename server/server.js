@@ -7,9 +7,9 @@ import { execute, subscribe, parse } from 'graphql';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import cors from 'cors'
-import jwt from 'express-jwt'
+// import jwt from 'express-jwt'
 
-import { JWT_SECRET } from './config'
+// import { JWT_SECRET } from './config'
 
 import { schema } from './src/schema';
 import { required } from 'glamor';
@@ -47,17 +47,17 @@ server.use(function (req, res, next) {
 // https://medium.com/react-native-training/building-chatty-part-7-authentication-in-graphql-cd37770e5ab3
 server.use('/graphql', bodyParser.json(),
 // express-jwt will decode token and add its data to the req.user header.
-  jwt({
-    secret: JWT_SECRET,
-    credentialsRequired: false,
-  }),
+  // jwt({
+  //   secret: JWT_SECRET,
+  //   credentialsRequired: false,
+  // }),
 // Define the context for this request to render user specific data.
   graphqlExpress(req => {
     return ({
       schema,
       context: {
         gameName: req.headers.gamename,
-        spymaster: req.user ? true : false
+        // spymaster: req.user ? true : false
       }
     })
   })
