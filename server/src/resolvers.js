@@ -6,10 +6,11 @@ import Scoreboard from '../Models/Scoreboard'
 import TurnsManager from '../Models/TurnsManager'
 import CluesFeed from '../Models/CluesFeed'
 import { JWT_SECRET } from '../config'
+import { GameSession } from './connectors'
 
 const wordGridSubscription = 'wordGridSubscription'
 const cluesFeedSubscription = 'cluesFeedSubscription'
-const cluePresentSubscription = 'cluePresentSubscription' 
+const cluePresentSubscription = 'cluePresentSubscription'
 const scoreboardSubscription = 'scoreboardSubscription'
 const currentTurnSubscription = 'currentTurnSubscription'
 const endGameSubscription = 'endGameSubscription'
@@ -28,7 +29,7 @@ const hideCells = wordCell => {
   if (wordCell.isEnabled === false) {
     return wordCell
   }
-  return {...wordCell, type: 'Hidden'} 
+  return {...wordCell, type: 'Hidden'}
 }
 
 const pointsAdder = (type) => {
@@ -61,7 +62,7 @@ const clueExists = () => {
   return turnsManager.state.numberOfClues !== 0
 }
 
-const clueAdder = (hint, associated, team) => { 
+const clueAdder = (hint, associated, team) => {
   Cluesfeed.addToCluesFeed({ hint, associated, team })
   turnsManager.listenToClues(associated)
 }
@@ -70,6 +71,14 @@ const pubsub = new PubSub()
 
 export const resolvers = {
   Query: {
+    session: (root, args, context) => {
+      const { gameName } = context
+      console.log(GameSession)
+      if (!GameSession.getSession([gameName])) {
+        return { gameExists: false}
+      }
+      return { gameExists: true}
+    },
     wordCells: (_, args, context) => {
       if (!context.spymaster) {
         const hideUnselectedCells = Words.map(hideCells)
@@ -109,7 +118,7 @@ export const resolvers = {
       if (turnsManager.wordSelected(selectedWord.type) === 'endGame') {
         pubsub.publish(endGameSubscription, { endGameSubscription: true })
       }
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 })
       pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
       pubsub.publish(scoreboardSubscription, { scoreboardSubscription: scoreBoard })
       pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
@@ -129,14 +138,19 @@ export const resolvers = {
 
       clueAdder(args.hint, args.associated, turnsManager.state.currentTurn)
 
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 })
       pubsub.publish(cluesFeedSubscription, { cluesFeedSubscription: Cluesfeed.cluesFeed })
     },
     skipTurn: () => {
       console.log('Team has decided to skip the rest of their turn.')
       turnsManager.switchTurn()
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 }) 
+      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 })
       pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
+    },
+    createGameSession: (_, args, ctx) => {
+      GameSession.createNewGame(args.gameName, args.password)
+      // TODO: Handle errors, eg no duplicates, network errors.
+      return 'Successfully created game session: ' + args.gameName
     },
     createSpymaster: (_, args, ctx) => {
       password = args.password
