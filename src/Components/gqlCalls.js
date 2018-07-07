@@ -21,7 +21,7 @@ query allWordsQuery {
       index
       word
       type
-      isEnabled
+      isSelectable
   }
 }`;
 
@@ -80,7 +80,7 @@ export const WordGridSubscription = gql`
       index
       word
       type
-      isEnabled
+      isSelectable
     }
   }
 `;

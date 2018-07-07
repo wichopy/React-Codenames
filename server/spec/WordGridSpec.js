@@ -13,12 +13,12 @@ describe( "WordGrid Controller", () => {
     index: 0,
     type: 'Blue',
     word: 'banana',
-    isEnabled: true,
+    isSelectable: true,
   }, {
     index: 1,
     type: 'Red',
     word: 'peach',
-    isEnabled: true,
+    isSelectable: true,
   }]
 
   it('should hide the word cell type if the user is not the spymaster', () => {

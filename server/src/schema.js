@@ -9,7 +9,7 @@ const typeDefs = `
     index: Int!
     type: String!
     word: String!
-    isEnabled: Boolean!
+    isSelectable: Boolean!
   }
 
   type Scoreboard {

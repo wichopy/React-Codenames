@@ -21,13 +21,13 @@ class WordCellGrid extends Component {
         //TODO: Instead of receiving the whole word grid and processing it on client, there should be a specific subscription for word reshuffles and word selections.
         for (let i = 0; i < 25; i++) {
           // If new word was selected, update grid with only the new cell.
-          if (newData[i].isEnabled !== previousState.wordCells[i].isEnabled) {
+          if (newData[i].isSelectable !== previousState.wordCells[i].isSelectable) {
             newWordGrid[i] = newData[i]
             break
           }
           // If a word was reshuffled, only update the cell with the updated word.
           if (newData[i].word !== previousState.wordCells[i].word) {
-            newWordGrid[i] = {...previousState.wordCells[i], word: newData[i].word } 
+            newWordGrid[i] = {...previousState.wordCells[i], word: newData[i].word }
           }
         }
         return {
@@ -36,7 +36,7 @@ class WordCellGrid extends Component {
       },
     })
   }
-  
+
   componentDidMount() {
     this.props.callbacks['WordCellGridRefetch'] = this.refetch
     console.log("Word Cell Grid Mounted")
@@ -68,7 +68,7 @@ class WordCellGrid extends Component {
                   id: i*5+index,
                   value: cell.word,
                   type: cell.type,
-                  isEnabled: cell.isEnabled,
+                  isSelectable: cell.isSelectable,
                   enableReshuffle,
                   token,
                 })

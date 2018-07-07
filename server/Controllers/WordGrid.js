@@ -8,7 +8,7 @@ class WordGrid {
 
   // default 5 x 5 grid
   static _uncoloredGrid = () => {
-    let unindexedGridValues = Array(25).fill({ word: '', type: '', isEnabled: true });
+    let unindexedGridValues = Array(25).fill({ word: '', type: '', isSelectable: true });
     return unindexedGridValues.map((cell, index) => { return Object.assign({}, { index: index}, cell) });
   }
 
@@ -73,7 +73,7 @@ class WordGrid {
     let result = wordGrid
     if (!isSpymaster) {
       result = wordGrid.map(word => {
-        if (word.isEnabled === false) {
+        if (word.isSelectable === false) {
           return word
         }
         return {...word, type: 'Hidden'}
