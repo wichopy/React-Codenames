@@ -1,26 +1,24 @@
 var faker = require('faker');
 
-class wordGrid {
-  wordGrid = []
-  
-  _RandomNumber = (min, max) => {
+class WordGrid {
+  static _RandomNumber = (min, max) => {
     let randomNumber = Math.floor(Math.random() * max) + min;
     return randomNumber;
   }
 
   // default 5 x 5 grid
-  _uncoloredGrid = () => {
+  static _uncoloredGrid = () => {
     let unindexedGridValues = Array(25).fill({ word: '', type: '', isEnabled: true });
     return unindexedGridValues.map((cell, index) => { return Object.assign({}, { index: index}, cell) });
   }
 
-  _setBackgrounds = (colorlessGrid, size) => {
+  static _setBackgrounds = (colorlessGrid, size) => {
     const gridValues = colorlessGrid;
     let populateCount = 0;
 
-    //set red team 
+    //set red team
     for(let i = 0; i <= 8; i++){
-      let newRandomPosition = this._RandomNumber(0, size * size - 1 - populateCount);
+      let newRandomPosition = WordGrid._RandomNumber(0, size * size - 1 - populateCount);
       gridValues[newRandomPosition].type = 'Red'
       populateCount++;
       gridValues.push(gridValues[newRandomPosition]);
@@ -29,7 +27,7 @@ class wordGrid {
 
     //set blue team
     for(let i = 0; i <= 7; i++){
-      let newRandomPosition = this._RandomNumber(0, size * size - 1 - populateCount);
+      let newRandomPosition = WordGrid._RandomNumber(0, size * size - 1 - populateCount);
       gridValues[newRandomPosition].type = 'Blue'
       populateCount++;
       gridValues.push(gridValues[newRandomPosition]);
@@ -44,7 +42,7 @@ class wordGrid {
 
     // set innocent peoples
     for(let i = 0; i <= 6; i++){
-      let newRandomPosition = this._RandomNumber(0, size * size - 1 - populateCount);
+      let newRandomPosition = WordGrid._RandomNumber(0, size * size - 1 - populateCount);
       gridValues[newRandomPosition].type = 'Innocent'
       populateCount++;
       gridValues.push(gridValues[newRandomPosition]);
@@ -54,20 +52,35 @@ class wordGrid {
     return gridValues;
   }
 
-  generate = () => {
-    let wordGrid = this._setBackgrounds(this._uncoloredGrid(), 5)
-    
+  static generate = () => {
+    let wordGrid = WordGrid._setBackgrounds(WordGrid._uncoloredGrid(), 5)
+
     for(let i = 0; i < wordGrid.length; i++) {
       let newWord = faker.random.word();
-      wordGrid[i] = Object.assign(wordGrid[i], { word: newWord });
+      wordGrid[i] = {...wordGrid[i], word: newWord };
     }
-    
-    this.wordGrid = wordGrid.sort((a,b) => a.index - b.index);
+
+    return wordGrid.sort((a,b) => a.index - b.index);
   }
 
-  reshuffleCell = (index) => {
-    this.wordGrid[index] = {...this.wordGrid[index], word: faker.random.word()}
+  static reshuffleCell = (wordGrid, index) => {
+    const nextWordGrid = [...wordGrid]
+    nextWordGrid[index] = {...wordGrid[index], word: faker.random.word()}
+    return nextWordGrid
+  }
+
+  static displayWordGrid = (wordGrid, isSpymaster) => {
+    let result = wordGrid
+    if (!isSpymaster) {
+      result = wordGrid.map(word => {
+        if (word.isEnabled === false) {
+          return word
+        }
+        return {...word, type: 'Hidden'}
+      })
+    }
+    return result
   }
 }
 
-export default wordGrid
+export default WordGrid
