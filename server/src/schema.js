@@ -20,6 +20,10 @@ const typeDefs = `
   type CurrentTurn {
     currentTurn: String!
     winner: String!
+    numberOfClues: Int
+    numberOfGuesses: Int
+    nextTurn: String
+    guessedAllClues: Boolean
   }
 
   type Clue {
@@ -30,6 +34,14 @@ const typeDefs = `
 
   type Session {
     gameExists: Boolean
+    gameSession: GameSession
+  }
+
+  type GameSession {
+    turnsManager: CurrentTurn
+    scoreBoard: Scoreboard
+    cluesfeed: [Clue]
+    words: [WordCell]
   }
 
   type Query {

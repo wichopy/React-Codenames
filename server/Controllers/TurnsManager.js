@@ -8,6 +8,14 @@ const defaultState = {
 }
 
 class TurnsManager {
+  static generate = () => ({
+    currentTurn: 'Red',
+    winner: '',
+    numberOfClues: 0,
+    numberOfGuesses: 0,
+    nextTurn: 'Blue',
+    guessedAllClues: false
+  })
 
   state = defaultState
 
@@ -15,25 +23,27 @@ class TurnsManager {
     this.state = defaultState
   }
 
-  declareWinner(team) {
-    this.state.winner = team
-    console.log(`Winning team is: ${team}`)
+  static declareWinner(turnsManager, team) {
+    const nextGameSession = {...turnsManager}
+    nextGameSession.winner = team
+
+    return nextGameSession
   }
 
   listenToClues = (clues) => {
     this.state.numberOfClues = clues
     console.log(`Update number of clues to watch to ${clues}`)
     this.state.guessedAllClues = false
-    this.EndTurnAfterGuessingAllClues()
+    this.endTurnAfterGuessingAllClues()
   }
 
   listenToGuesses = () => {
     this.state.numberOfGuesses ++
     console.log('Guessed a word.')
-    this.EndTurnAfterGuessingAllClues()
+    this.endTurnAfterGuessingAllClues()
   }
 
-  EndTurnAfterGuessingAllClues = () => {
+  endTurnAfterGuessingAllClues = () => {
     console.log(`${this.state.numberOfGuesses} == ${this.state.numberOfClues}`)
     if (this.state.numberOfGuesses == this.state.numberOfClues) {
       console.log("Used all guesses, end turn!")
@@ -42,15 +52,25 @@ class TurnsManager {
     }
   }
 
-  switchTurn = () => {
-    let tempTurnKeeper = this.state.currentTurn
-    this.state.currentTurn = this.state.nextTurn
-    this.state.nextTurn = tempTurnKeeper
-    this.state.numberOfGuesses = 0
-    this.state.numberOfClues = 0
+  static switchTurn = (turnsManager) => {
+    const nextTurnsManager = { ...turnsManager }
+    let tempTurnKeeper = nextTurnsManager.currentTurn
+    nextTurnsManager.currentTurn = nextTurnsManager.nextTurn
+    nextTurnsManager.nextTurn = tempTurnKeeper
+    nextTurnsManager.numberOfGuesses = 0
+    nextTurnsManager.numberOfClues = 0
+
+    return nextTurnsManager
   }
 
-  wordSelected(type) {
+  static increaseNumberOfGuesses = (turnsManager) => {
+    const nextTurnsManager = {...turnsManager}
+    nextTurnsManager.numberOfGuesses ++
+
+    return nextTurnsManager
+  }
+
+  static wordSelected(type) {
     if (type == 'Innocent') {
       // Do nothing.
       return

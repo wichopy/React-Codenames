@@ -1,12 +1,14 @@
 import { PubSub, withFilter } from 'graphql-subscriptions';
-import jwt from 'jsonwebtoken'
+import jwt from '../../../../Library/Caches/typescript/2.9/node_modules/@types/jsonwebtoken'
 
-import WordGrid from '../Models/WordGrid'
-import Scoreboard from '../Models/Scoreboard'
-import TurnsManager from '../Models/TurnsManager'
-import CluesFeed from '../Models/CluesFeed'
+import WordGrid from '../Controllers/WordGrid'
+import Scoreboard from '../Controllers/Scoreboard'
+import TurnsManager from '../Controllers/TurnsManager'
+import CluesFeed from '../Controllers/CluesFeed'
+
 import { JWT_SECRET } from '../config'
-import { GameSession } from './connectors'
+import { GameSessionStore } from './connectors'
+import { createError } from 'apollo-errors';
 
 const wordGridSubscription = 'wordGridSubscription'
 const cluesFeedSubscription = 'cluesFeedSubscription'
@@ -15,40 +17,35 @@ const scoreboardSubscription = 'scoreboardSubscription'
 const currentTurnSubscription = 'currentTurnSubscription'
 const endGameSubscription = 'endGameSubscription'
 
+
+// Wrapper resolvers via https://www.youtube.com/watch?v=4_Bcw7BULC8
+
 //TODO: Have unique game sessions and store password inside of these game sessions instead of in resolvers.
 let password
 
 let turnsManager = new TurnsManager()
-let scoreBoard = new Scoreboard()
-let wordGrid = new WordGrid()
-let Cluesfeed = new CluesFeed()
-wordGrid.generate()
-let Words = wordGrid.wordGrid
 
-const hideCells = wordCell => {
-  if (wordCell.isEnabled === false) {
-    return wordCell
-  }
-  return {...wordCell, type: 'Hidden'}
-}
+const pubsub = new PubSub()
+const gameSessionStore = new GameSessionStore()
 
-const pointsAdder = (type) => {
-  if (type == 'Red') {
-    scoreBoard.Red ++
-    if (scoreBoard.Red == 9) {
-      turnsManager.declareWinner('Red')
-      pubsub.publish(endGameSubscription, { endGameSubscription: true })
-    }
-  }
-  if (type == 'Blue') {
-    scoreBoard.Blue ++
-    if (scoreBoard.Blue == 8) {
-      turnsManager.declareWinner('Blue')
-      pubsub.publish(endGameSubscription, { endGameSubscription: true })
-    }
-  }
-  turnsManager.listenToGuesses()
-}
+
+// const pointsAdder = (type) => {
+//   if (type == 'Red') {
+//     scoreBoard.Red ++
+//     if (scoreBoard.Red == 9) {
+//       turnsManager.declareWinner('Red')
+//       pubsub.publish(endGameSubscription, { endGameSubscription: true })
+//     }
+//   }
+//   if (type == 'Blue') {
+//     scoreBoard.Blue ++
+//     if (scoreBoard.Blue == 8) {
+//       turnsManager.declareWinner('Blue')
+//       pubsub.publish(endGameSubscription, { endGameSubscription: true })
+//     }
+//   }
+//   turnsManager.listenToGuesses()
+// }
 
 const cluesAllowed = () => {
   let { currentTurn } = turnsManager.state
@@ -67,33 +64,61 @@ const clueAdder = (hint, associated, team) => {
   turnsManager.listenToClues(associated)
 }
 
-const pubsub = new PubSub()
+/*
+  Game pipeline:
+  All reducers are stateless functions in their own domains.
+  Game logic is composed inside resolvers using the state returned from the game session and passing it through the different reducers.
+                                                               Valid: Return game session
+  Query/Mutation -> resolver -> resolverWrapper -> GameSession -> reducers -> return
+                                                      |
+                                                      |
+                                                      ⎣Invalid: Return error
+*/
+
+const GameNotFoundError = createError('GameNotFoundError', {
+  message: 'You are not authorized!'
+})
+
+// resolver wrapper. Returns a promise to handle async actions in the future.
+const checkGameNameAndResolve = (context) => {
+  return new Promise((resolve, reject) => {
+    const { gameName } = context
+    const gameSession = gameSessionStore.getSession(gameName)
+    if (gameSessionStore.getSession(gameName)) {
+      resolve(gameSession)
+    } else {
+      reject(new GameNotFoundError())
+    }
+  })
+}
 
 export const resolvers = {
   Query: {
     session: (root, args, context) => {
-      const { gameName } = context
-      console.log(GameSession)
-      if (!GameSession.getSession([gameName])) {
+      const { gameName, spymaster } = context
+      console.log(gameSessionStore)
+      if (!gameSessionStore.getSession(gameName)) {
         return { gameExists: false}
       }
       return { gameExists: true}
     },
-    wordCells: (_, args, context) => {
-      if (!context.spymaster) {
-        const hideUnselectedCells = Words.map(hideCells)
-        return hideUnselectedCells
-      }
-      return Words;
+    wordCells: (root, args, context) => {
+      return checkGameNameAndResolve(context).then(gameSession => {
+        return WordGrid.displayWordGrid(gameSession.wordsGrid, context.spymaster)
+      })
     },
-    score: () => {
-      return scoreBoard;
+    score: (root, args, context) => {
+      return checkGameNameAndResolve(context).then(gameSession => {
+        return gameSession.scoreBoard
+      })
     },
     turn: () => {
       return turnsManager.state
     },
-    clues: () => {
-      return Cluesfeed.cluesFeed
+    clues: (root, args, context) => {
+      return checkGameNameAndResolve(context).then(gameSession => {
+        return gameSession.cluesFeed
+      })
     },
     clue: () => {
       return turnsManager.state.numberOfClues > 0
@@ -103,27 +128,115 @@ export const resolvers = {
     }
   },
   Mutation: {
-    selectWord: (root, args, ctx) => {
-      const selectedWord = Words.find( (element, index) => {
-        if (element.index == args.index) {
-          return element
-        }
-      })
-      if (turnsManager.state.numberOfClues == 0) {
-        console.log('Can\'t guess a word if you don\'t have a clue!')
-        return
-      }
-      Words[selectedWord.index].isEnabled = false
-      pointsAdder(selectedWord.type)
-      if (turnsManager.wordSelected(selectedWord.type) === 'endGame') {
-        pubsub.publish(endGameSubscription, { endGameSubscription: true })
-      }
-      pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 })
-      pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
-      pubsub.publish(scoreboardSubscription, { scoreboardSubscription: scoreBoard })
-      pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
+    selectWord: (root, args, context) => {
+      return checkGameNameAndResolve(context).then(gameSession => {
+        const selectedWord = gameSession.wordsGrid.find(word => {
+          if (+word.index === +args.index) {
+            return word
+          }
+        })
 
-      return Words[selectedWord.index]
+        if (gameSession.numberOfClues === 0) {
+          console.log('Can\'t guess a word if you don\'t have a clue!')
+          return
+        }
+
+        const nextWordGrid = WordGrid.disableWord(gameSession.wordsGrid, args.index)
+
+        let nextScoreboard
+        let nextTurnManager
+
+        if (selectedWord.type === 'Red') {
+          nextScoreboard = Scoreboard.incrementRed(gameSession.scoreBoard)
+          if (nextScoreboard.Red === 9) {
+            nextTurnManager = TurnsManager.declareWinner(gameSession.turnsManager, 'Red')
+            pubsub.publish(endGameSubscription, { endGameSubscription: true })
+          }
+        }
+
+        if (selectedWord.type === 'Blue') {
+          nextScoreboard = Scoreboard.incrementBlue(gameSession.scoreBoard)
+          if (nextScoreboard.Blue === 8) {
+            nextTurnManager = TurnsManager.declareWinner(gameSession.turnsManager, 'Blue')
+            pubsub.publish(endGameSubscription, { endGameSubscription: true })
+          }
+        }
+
+        nextTurnManager = TurnsManager.increaseNumberOfGuesses(gameSession.turnsManager)
+        console.log('Guessed a word.')
+
+
+        this.endTurnAfterGuessingAllClues()
+
+        // ----- TurnsManager.wordSelected
+        // if (selectedWord.type == 'Innocent') {
+        //   // Do nothing.
+        //   return
+        // }
+
+        if (selectedWord.type == 'Assassin') {
+          // End game, Other team wins
+          // BUG: Not declaring winner properly on a assassin lose.
+          if (gameSession.turnsManager.currentTurn == 'Red') {
+            if (gameSession.turnsManager.guessedAllClues) {
+              nextTurnManager = TurnsManager.declareWinner(gameSession.turnsManager, 'Red')
+            }
+            nextTurnManager = TurnsManager.declareWinner(gameSession.turnsManager, 'Blue')
+          }
+
+          if (gameSession.turnsManager.currentTurn == 'Blue') {
+            if (gameSession.turnsManager.guessedAllClues) {
+              nextTurnManager = TurnsManager.declareWinner(gameSession.turnsManager, 'Blue')
+            }
+            nextTurnManager = TurnsManager.declareWinner(gameSession.turnsManager, 'Red')
+          }
+
+          pubsub.publish(endGameSubscription, { endGameSubscription: true })
+        }
+
+        if (selectedWord.type !== gameSession.turnsManager.currentTurn ) {
+          // Switch turns if user selects word for the other team.
+          console.log('Woopse guessed word for other team, switch turns')
+          nextTurnManager = TurnsManager.switchTurn(gameSession.turnsManager)
+        }
+
+        // -----
+
+        pubsub.publish(cluePresentSubscription, { cluePresentSubscription: nextTurnManager.numberOfClues > 0 })
+        pubsub.publish(wordGridSubscription, { wordGridSubscription: nextWordGrid})
+        pubsub.publish(scoreboardSubscription, { scoreboardSubscription: nextScoreboard })
+        pubsub.publish(currentTurnSubscription, { currentTurnSubscription: nextTurnManager })
+
+        gameSession.updateSessionState(context.gameName, {
+          turnsManager: nextTurnManager,
+          scoreBoard: nextScoreboard,
+          wordsGrid: nextWordGrid,
+        })
+
+        return nextWordGrid
+      })
+
+      // const selectedWord = Words.find(element => {
+      //   if (element.index == args.index) {
+      //     return element
+      //   }
+      // })
+      // if (turnsManager.state.numberOfClues == 0) {
+      //   console.log('Can\'t guess a word if you don\'t have a clue!')
+      //   return
+      // }
+
+      // Words[selectedWord.index].isSelectable = false
+      // pointsAdder(selectedWord.type)
+      // if (turnsManager.wordSelected(selectedWord.type) === 'endGame') {
+      //   pubsub.publish(endGameSubscription, { endGameSubscription: true })
+      // }
+      // pubsub.publish(cluePresentSubscription, { cluePresentSubscription: turnsManager.state.numberOfClues > 0 })
+      // pubsub.publish(wordGridSubscription, { wordGridSubscription: Words})
+      // pubsub.publish(scoreboardSubscription, { scoreboardSubscription: scoreBoard })
+      // pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
+
+      // return Words[selectedWord.index]
     },
     addClue: (_, args) => {
       let maxClues = cluesAllowed()
@@ -148,7 +261,12 @@ export const resolvers = {
       pubsub.publish(currentTurnSubscription, { currentTurnSubscription: turnsManager.state })
     },
     createGameSession: (_, args, ctx) => {
-      GameSession.createNewGame(args.gameName, args.password)
+      gameSessionStore.createNewGame(args.gameName, args.password, {
+        turnsManager: TurnsManager.generate(),
+        scoreBoard: Scoreboard.generate(),
+        cluesfeed: CluesFeed.generate(),
+        wordsGrid: WordGrid.generate(),
+      })
       // TODO: Handle errors, eg no duplicates, network errors.
       return 'Successfully created game session: ' + args.gameName
     },
@@ -165,21 +283,24 @@ export const resolvers = {
         return token
       }
     },
-    newGame: () => {
-      turnsManager.reset()
-      scoreBoard.reset()
-      wordGrid.generate()
-      Words = wordGrid.wordGrid
-      Cluesfeed.reset()
-      pubsub.publish(endGameSubscription, { endGameSubscription: false })
+    newGame: (root, args, context) => {
+      return checkGameNameAndResolve(context).then(gameSession => {
+        gameSessionStore.resetGame(args.gameName, {
+          turnsManager: TurnsManager.generate(),
+          scoreBoard: Scoreboard.generate(),
+          cluesfeed: CluesFeed.generate(),
+          wordsGrid: WordGrid.generate(),
+        })
+        pubsub.publish(endGameSubscription, { endGameSubscription: false })
+      })
     },
-    reshuffleWord: (_, args, ctx) => {
-      wordGrid.reshuffleCell(args.index)
-      Words = wordGrid.wordGrid
-      pubsub.publish(wordGridSubscription, { wordGridSubscription: Words })
+    // reshuffleWord: (_, args, ctx) => {
+    //   wordGrid.reshuffleCell(args.index)
+    //   Words = wordGrid.wordGrid
+    //   pubsub.publish(wordGridSubscription, { wordGridSubscription: Words })
 
-      return Words[args.index]
-    }
+    //   return Words[args.index]
+    // }
   },
   Subscription: {
     wordGridSubscription: {

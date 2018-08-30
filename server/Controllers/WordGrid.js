@@ -81,6 +81,13 @@ class WordGrid {
     }
     return result
   }
+
+  static disableWord = (wordGrid, index) => {
+    const nextWordGrid = [...wordGrid]
+    nextWordGrid[index].isSelectable = false
+
+    return nextWordGrid
+  }
 }
 
 export default WordGrid
