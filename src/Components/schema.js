@@ -1,7 +1,7 @@
 export const typeDefs = `
   type WordCell {
     type: String!
-    isEnabled: Boolean!
+    isSelectable: Boolean!
     index: Int!
     word: String!
   }

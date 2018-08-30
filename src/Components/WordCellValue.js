@@ -11,10 +11,10 @@ const WordCellValue = (props) => {
       refetchQueries: [ { query: WordCellGridQuery }]
     })
   }
-  
-  const { id, value, isEnabled, enableReshuffle, token } = props
+
+  const { id, value, isSelectable, enableReshuffle, token } = props
   let className = 'word-cell-value'
-  if (!isEnabled) {
+  if (!isSelectable) {
     className += ' disabled'
   }
 
@@ -22,12 +22,12 @@ const WordCellValue = (props) => {
     className += ' inReshuffleMode'
   }
 
-  return ce('span', 
+  return ce('span',
     { name: id,
       className,
-      onClick: isEnabled && enableReshuffle && token ? 
+      onClick: isSelectable && enableReshuffle && token ?
                (ev) => handleWordClick(ev, id) :
-               () => { return } 
+               () => { return }
     }, value
   )
 }

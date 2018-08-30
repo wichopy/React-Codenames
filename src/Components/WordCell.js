@@ -19,11 +19,11 @@ class WordCell extends Component {
   }
 
   render() {
-    let { type, isEnabled, value, id, token } = this.props
+    let { type, isSelectable, value, id, token } = this.props
     let { handleCellClick } = this
     const { enableReshuffle } = this.props
     let className = 'word-cell ' + type
-    if (!isEnabled) {
+    if (!isSelectable) {
       className += ' disabled'
     }
 
@@ -34,10 +34,10 @@ class WordCell extends Component {
     return ce('td', {
       className: className,
       name: id,
-      onClick: isEnabled && !enableReshuffle ? 
-               () => handleCellClick(id) : 
+      onClick: isSelectable && !enableReshuffle ?
+               () => handleCellClick(id) :
                () => { return },
-      }, ce(WordCellValue, { id, value, isEnabled, enableReshuffle, token }),
+      }, ce(WordCellValue, { id, value, isSelectable, enableReshuffle, token }),
     );
   }
 };

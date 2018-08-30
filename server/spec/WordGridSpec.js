@@ -1,19 +1,32 @@
-import WordGrid from '../Models/WordGrid';
-describe( "WordGrid", () => {
-  let wordGrid;
+import WordGrid from '../Controllers/WordGrid';
+describe( "WordGrid Controller", () => {
 
-  beforeEach(() => {
-    wordGrid = new WordGrid();
-    wordGrid.generate()
-  })
   it("Creates a random 5x5 grid of words", () => {
-    expect(wordGrid.wordGrid.length).toEqual(25)
+    expect(WordGrid.generate().length).toEqual(25)
   })
 
-  it("Can reshuffle words", ()=> {
-    const oldWord = wordGrid.wordGrid[0].word
-    wordGrid.reshuffleCell(0)
-    const newWord = wordGrid.wordGrid[0].word
-    expect(oldWord === newWord).toBeFalsy()
+  it('can reshuffle a word', () => {
+    expect(WordGrid.reshuffleCell(['word', 'word'], 1)[1] !== 'word').toBeTruthy
   })
+
+  const wordGrid = [{
+    index: 0,
+    type: 'Blue',
+    word: 'banana',
+    isSelectable: true,
+  }, {
+    index: 1,
+    type: 'Red',
+    word: 'peach',
+    isSelectable: true,
+  }]
+
+  it('should hide the word cell type if the user is not the spymaster', () => {
+    expect(WordGrid.displayWordGrid(wordGrid, false)[0].type).toEqual('Hidden')
+  })
+
+  it('should show the word cell type if the user is the spymaster', () => {
+    expect(WordGrid.displayWordGrid(wordGrid, true)[0].type).toEqual('Blue')
+  })
+
 })

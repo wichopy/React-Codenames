@@ -1,8 +1,8 @@
-import TurnsManager from '../Models/TurnsManager';
+import TurnsManager from '../Controllers/TurnsManager';
 describe( "TurnsManager", () => {
-  
+
   let turnsManager;
-  
+
   beforeEach(() => {
     turnsManager = new TurnsManager();
   });
@@ -19,7 +19,7 @@ describe( "TurnsManager", () => {
     turnsManager.state.numberOfClues = 4;
     turnsManager.state.numberOfGuesses = 4;
 
-    turnsManager.EndTurnAfterGuessingAllClues();
+    turnsManager.endTurnAfterGuessingAllClues();
 
     expect(turnsManager.state.numberOfClues == 0)
     expect(turnsManager.state.numberOfGuesses == 0)
